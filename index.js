@@ -30,7 +30,8 @@ app.use((req, res, next) => {
 
 app.get('/', async (req, res) => {
     try {
-        res.send('This is the right place');
+        res.send('This is the right place, yes');
+        console.log('hello log, its me Bar');
     } catch (err) {
         console.log('get errorr!!', err);
         res.send('failed!!');
