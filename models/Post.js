@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const PostSchema = mongoose.Schema({
+    active: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
     title: {
         type: String,
         required: true
@@ -13,6 +18,10 @@ const PostSchema = mongoose.Schema({
         ],
         required: true,
         default: 'Platform'
+    },
+    paymentHooks: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Payment'
     },
     email: {
         type: String,

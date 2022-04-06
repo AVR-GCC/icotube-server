@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const data = await Posts.find({});
+        const data = await Posts.find({ active: true });
         res.send({
             success: true,
             data
@@ -46,6 +46,7 @@ router.put('/', async (req, res) => {
             endDate
         } = { ...defaults, ...req.body };
         const post = new Posts({
+            active: false,
             title,
             email,
             description,

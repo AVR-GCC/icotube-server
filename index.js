@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const postsRouter = require('./routes/posts');
+const paymentsRouter = require('./routes/payments');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -39,6 +40,7 @@ app.get('/', async (req, res) => {
 });
 
 app.use('/posts', postsRouter);
+app.use('/payment', paymentsRouter);
 
 // ------------ DB ------------
 
