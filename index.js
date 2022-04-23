@@ -27,6 +27,21 @@ app.use((req, res, next) => {
     next();
 })
 
+const withAuth = async (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) {
+        res.status(401).send('Unauthorized: No token provided');
+    } else {
+        const decoded = await jwt.verify(token, secret);
+        req.email = decoded.email;
+        next();
+    }
+}
+
+app.get('/check-auth', withAuth, function(req, res) {
+    res.send('The password is potato');
+});
+
 
 // ------------ ROUTES ------------
 
