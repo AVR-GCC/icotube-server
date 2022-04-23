@@ -49,26 +49,30 @@ router.post('/login', async (req, res) => {
                 res.status(401).json({
                     error: 'Incorrect email or password'
                 });
+                return;
             }
-            const user = await Users.find({ email: googleEmail });
+            const user = await Users.findOne({ email: googleEmail });
             if (!user) {
-                res.status(401).json({
-                    error: 'Incorrect email or password'
-                });
+                const user = await new Users({
+                    email: googleEmail,
+                    hash: null
+                }).save();
             }
             email = googleEmail;
         } else {
-            const user = await Users.find({ email });
+            const user = await Users.findOne({ email });
             if (!user) {
                 res.status(401).json({
                     error: 'Incorrect email or password'
                 });
+                return;
             }
-            const hash = await bcrypt.hash(password, 10);
-            if (hash !== user.hash) {
+            const compare = await bcrypt.compare(password, user.hash);
+            if (!compare) {
                 res.status(401).json({
                     error: 'Incorrect email or password'
                 });
+                return;
             }
         }
         // generate token

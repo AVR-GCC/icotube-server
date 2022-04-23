@@ -4,15 +4,18 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv/config');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
+const authRouter = require('./routes/auth');
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // ------------ MIDDLEWARE ------------
 
@@ -58,6 +61,7 @@ app.get('/', async (req, res) => {
 app.use('/config', configRouter);
 app.use('/posts', postsRouter);
 app.use('/payment', paymentsRouter);
+app.use('/auth', authRouter);
 
 // ------------ DB ------------
 
