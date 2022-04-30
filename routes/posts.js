@@ -1,6 +1,6 @@
 const express = require('express');
 const Posts = require('../models/Post');
-const { wait } = require('./utils');
+const { withAuth } = require('./utils');
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', withAuth, async (req, res) => {
     try {
         const defaults = {
             description: '',

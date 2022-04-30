@@ -9,15 +9,30 @@ const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
+const { withAuth } = require('./routes/utils');
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+const corsConfig = {
+    origin: true,
+    credentials: true,
+};
+
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 // ------------ MIDDLEWARE ------------
+
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+    next();
+});
 
 // logger
 
@@ -29,17 +44,6 @@ app.use((req, res, next) => {
     }
     next();
 })
-
-const withAuth = async (req, res, next) => {
-    const token = req.cookies.token;
-    if (!token) {
-        res.status(401).send('Unauthorized: No token provided');
-    } else {
-        const decoded = await jwt.verify(token, secret);
-        req.email = decoded.email;
-        next();
-    }
-}
 
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');
