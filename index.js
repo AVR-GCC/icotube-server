@@ -54,7 +54,7 @@ app.get('/check-auth', withAuth, function(req, res) {
 
 app.get('/', async (req, res) => {
     try {
-        res.send('This is the right place, yes, nice job');
+        res.send('This is the right place, yes, nice job!');
         console.log('hello log, its me Bar');
     } catch (err) {
         console.log('get errorr!!', err);
