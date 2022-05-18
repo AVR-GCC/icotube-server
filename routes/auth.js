@@ -2,9 +2,11 @@ const express = require('express');
 require('dotenv/config');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const bcrypt = require('bcrypt');
 const Users = require('../models/User');
 const { omit } = require('lodash');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -102,8 +104,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        res.clearCookie('token')
-        res.status(200).json('User Logged out')
+        req.logout();
+        res.redirect(process.env.CLIENT_URL);
+        console.log('User Logged out');
     } catch (err) {
         console.log('logout error:', err);
         res.send({
@@ -115,6 +118,44 @@ const logout = async (req, res) => {
 
 router.post('/signup', signup);
 router.post('/login', login);
-router.post('/logout', logout);
+router.get('/logout', logout);
+
+
+router.get('/login/success', async (req, res) => {
+    if (req.user) {
+        let user = await Users.findOne({ email: { $in: req.user.emails.map(email => email.value) } });
+        if (!user) {
+            user = new User({
+                email: req.user.emails[0].value,
+                imageUrl: req.user.photos[0].value
+            });
+            await user.save();
+        } else if (!user.imageUrl) {
+            user.imageUrl = req.user.photos[0].value;
+            await user.save()
+        }
+        res.status(200).json({
+            success: true,
+            message: 'successful!',
+            user,
+            cookies: req.cookies
+        });
+    }
+});
+
+router.get('/login/failed', (req, res) => {
+    console.log('login failed!', req);
+    res.status(401).json({
+        success: false,
+        message: 'failed!'
+    });
+});
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', passport.authenticate('google', {
+    successRedirect: process.env.CLIENT_URL,
+    failureRedirect: '/login/failed'
+}));
 
 module.exports = router;

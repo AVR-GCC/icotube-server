@@ -5,11 +5,14 @@ const mongoose = require('mongoose');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
+require('./passport.js');
+const cookieSession = require('cookie-session');
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
-const { withAuth } = require('./routes/utils');
+const { withAuth, oneDay } = require('./routes/utils');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -33,6 +36,15 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
     next();
 });
+
+app.use(cookieSession({
+    name: 'session',
+    keys: ['lama'],
+    maxAge: oneDay
+}));
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 // logger
 

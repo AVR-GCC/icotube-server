@@ -4,7 +4,7 @@ const wait = (miliseconds) => {
     return new Promise((resolve) => {
         setTimeout(resolve, miliseconds);
     });
-}
+};
 
 const withAuth = async (req, res, next) => {
     const token = req.cookies.token;
@@ -21,9 +21,18 @@ const withAuth = async (req, res, next) => {
             res.status(401).send('Unauthorized: Token expired');
         }
     }
-}
+};
+
+const oneMinute = 60 * 1000;
+
+const oneHour = 60 * oneMinute;
+
+const oneDay = 24 * oneHour;
 
 module.exports = {
     wait,
-    withAuth
+    withAuth,
+    oneMinute,
+    oneHour,
+    oneDay
 }
