@@ -122,7 +122,6 @@ router.get('/logout', logout);
 
 
 router.get('/login/success', async (req, res) => {
-    console.log('in the route!!!! user - ', req.user);
     if (req.user) {
         let user = await Users.findOne({ email: { $in: req.user.emails.map(email => email.value) } });
         if (!user) {
@@ -140,6 +139,11 @@ router.get('/login/success', async (req, res) => {
             message: 'successful!',
             user,
             cookies: req.cookies
+        });
+    } else {
+        res.status(401).json({
+            success: false,
+            message: 'No user connected'
         });
     }
 });
