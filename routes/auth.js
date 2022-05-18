@@ -122,7 +122,7 @@ router.get('/logout', logout);
 
 
 router.get('/login/success', async (req, res) => {
-    console.log('in the route!!!!');
+    console.log('in the route!!!! user - ', req.user);
     if (req.user) {
         let user = await Users.findOne({ email: { $in: req.user.emails.map(email => email.value) } });
         if (!user) {
