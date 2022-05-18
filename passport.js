@@ -26,5 +26,5 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((user, done) => {
   console.log('deserializeUser', user);
-  done(null, user);
+  return done(null, user);
 });
