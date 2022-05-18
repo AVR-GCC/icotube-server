@@ -8,14 +8,14 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile', 'email' ],
     state: true
   },
-  function(accessToken, refreshToken, profile, done) {
+  function(accessToken, refreshToken, profile, cb) {
     console.log('in the "use" function');
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);
     console.log('profile', profile);
     // const user = new User({ ...profile });
     // await user.save();
-    done(null, profile);
+    return cb(null, profile);
   }
 ));
 
