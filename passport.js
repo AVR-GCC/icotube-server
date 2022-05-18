@@ -8,21 +8,23 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile', 'email' ],
     state: true
   },
-  function(accessToken, refreshToken, profile, cb) {
+  function(accessToken, refreshToken, profile, done) {
     console.log('in the "use" function');
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);
     console.log('profile', profile);
     // const user = new User({ ...profile });
     // await user.save();
-    cb(null, profile);
+    done(null, profile);
   }
 ));
 
 passport.serializeUser((user, done) => {
-    done(null, user);
+  console.log('serializeUser', user);
+  done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-    done(null, user);
+  console.log('deserializeUser', user);
+  done(null, user);
 });
