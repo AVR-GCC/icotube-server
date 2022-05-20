@@ -51,6 +51,8 @@ app.use(function(req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(passport.authenticate('session'));
+
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');
 });
