@@ -9,27 +9,29 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile', 'email' ],
     state: true
   },
-  async function(accessToken, refreshToken, profile, done) {
+  function(accessToken, refreshToken, profile, done) {
     console.log('in the "use" function');
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);
     console.log('profile', profile);
     const emails = profile.emails.map(email => email.value) || [null];
     const imageUrl = (profile?.photos || [null])[0]?.value;
-    let user = await User.findOne({ email: { $in: emails } });
-    if (!user) {
+    User.findOne({ email: { $in: emails } }).then(potentialUser => {
+      let user = potentialUser;
+      if (!user) {
         user = new User({
-            email: emails[0],
-            imageUrl
+          email: emails[0],
+          imageUrl
         });
-        await user.save();
-    } else if (!user.imageUrl) {
+      } else if (!user.imageUrl) {
         user.imageUrl = imageUrl;
-        await user.save();
-    }
-    console.log('done', done);
-    console.log('end user', user);
-    return done(null, user);
+      }
+      user.save().then(() => {
+        console.log('done', done);
+        console.log('end user', user);
+        return done(null, user);
+      })
+    });
   }
 ));
 
@@ -42,6 +44,6 @@ passport.deserializeUser((id, done) => {
   console.log('deserializeUser', id);
   User.findById(id).then(user => {
     console.log('deserializeUser cb user', user);
-    done(null, user);
+    return done(null, user);
   });
 });
