@@ -43,16 +43,16 @@ app.use(cookieSession({
     maxAge: oneDay
 }));
 
-app.use(passport.initialize())
-app.use(passport.session())
-
-// logger
-
-app.use(morgan('dev'));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');
 });
+
+// logger
+
+app.use(morgan('dev'));
 
 
 // ------------ ROUTES ------------
