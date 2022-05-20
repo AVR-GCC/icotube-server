@@ -122,22 +122,12 @@ router.get('/logout', logout);
 
 
 router.get('/login/success', async (req, res) => {
+    console.log('login success req.user', req.user);
     if (req.user) {
-        let user = await Users.findOne({ email: { $in: req.user.emails.map(email => email.value) } });
-        if (!user) {
-            user = new User({
-                email: req.user.emails[0].value,
-                imageUrl: req.user.photos[0].value
-            });
-            await user.save();
-        } else if (!user.imageUrl) {
-            user.imageUrl = req.user.photos[0].value;
-            await user.save()
-        }
         res.status(200).json({
             success: true,
-            message: 'successful!',
-            user,
+            message: "successfull",
+            user: req.user,
             cookies: req.cookies
         });
     } else {

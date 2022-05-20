@@ -1,4 +1,5 @@
 const passport = require('passport');
+const User = require('./models/User');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.use(new GoogleStrategy({
@@ -8,23 +9,37 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile', 'email' ],
     state: true
   },
-  function(accessToken, refreshToken, profile, cb) {
+  async function(accessToken, refreshToken, profile, cb) {
     console.log('in the "use" function');
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);
     console.log('profile', profile);
-    // const user = new User({ ...profile });
-    // await user.save();
-    return cb(null, profile);
+    const emails = profile.emails.map(email => email.value) || [null];
+    const imageUrl = (profile?.photos || [null])[0]?.value;
+    let user = await User.findOne({ email: { $in: emails } });
+    console.log('b4 user', user);
+    if (!user) {
+        user = new User({
+            email: emails[0],
+            imageUrl
+        });
+        await user.save();
+    } else if (!user.imageUrl) {
+        user.imageUrl = imageUrl;
+        await user.save();
+    }
+    console.log('after user', user);
+    return cb(null, user);
   }
 ));
 
 passport.serializeUser((user, done) => {
   console.log('serializeUser', user);
-  done(null, user);
+  done(null, user._id);
 });
 
-passport.deserializeUser((user, done) => {
-  console.log('deserializeUser', user);
+passport.deserializeUser(async (id, done) => {
+  console.log('deserializeUser', id);
+  const user = await User.findById(id);
   return done(null, user);
 });
