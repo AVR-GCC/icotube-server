@@ -32,7 +32,7 @@ passport.use(new GoogleStrategy({
     //     return done(null, user);
     //   })
     // });
-    return done(null, user);
+    return done(null, profile);
   }
 ));
 
