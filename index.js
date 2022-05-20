@@ -6,8 +6,10 @@ require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
+const path = require('path');
 require('./passport.js');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
+// const SQLiteStore = require('connect-sqlite3')(session);
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
@@ -20,6 +22,15 @@ const corsConfig = {
     origin: true,
     credentials: true,
 };
+
+// session
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}));
 
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
@@ -36,12 +47,6 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
     next();
 });
-
-app.use(cookieSession({
-    name: 'session',
-    keys: ['lama'],
-    maxAge: oneDay
-}));
 
 app.use(passport.initialize());
 app.use(passport.session());

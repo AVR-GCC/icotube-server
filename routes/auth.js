@@ -122,7 +122,6 @@ router.get('/logout', logout);
 
 router.get('/login/success', async (req, res) => {
     console.log('login success!!!@@@@@!!! req.user', req.user);
-    console.log('login success req', req);
     if (req.user) {
         res.status(200).json({
             success: true,
