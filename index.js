@@ -1,4 +1,3 @@
-const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -22,7 +21,6 @@ const corsConfig = {
     credentials: true,
 };
 
-app.use(morgan('dev'));
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
@@ -50,14 +48,7 @@ app.use(passport.session())
 
 // logger
 
-app.use((req, res, next) => {
-    console.log(`Route: ${req.method} - ${req.url}`);
-    if (Object.keys(req.body).length) {
-        console.log('body:');
-        console.log(req.body);
-    }
-    next();
-})
+app.use(morgan('dev'));
 
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');

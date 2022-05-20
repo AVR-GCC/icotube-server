@@ -6,7 +6,6 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const Users = require('../models/User');
 const { omit } = require('lodash');
-const User = require('../models/User');
 
 const router = express.Router();
 
@@ -139,7 +138,7 @@ router.get('/login/success', async (req, res) => {
 });
 
 router.get('/login/failed', (req, res) => {
-    console.log('login failed!', req);
+    console.log('login failed!!!!!!!!!', req);
     res.status(401).json({
         success: false,
         message: 'failed!'

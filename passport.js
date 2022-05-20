@@ -27,6 +27,7 @@ passport.use(new GoogleStrategy({
         user.imageUrl = imageUrl;
         await user.save();
     }
+    console.log('done', done);
     console.log('end user', user);
     return done(null, user);
   }
