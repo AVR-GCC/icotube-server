@@ -9,7 +9,7 @@ passport.use(new GoogleStrategy({
     scope: [ 'profile', 'email' ],
     state: true
   },
-  async function(accessToken, refreshToken, profile, cb) {
+  async function(accessToken, refreshToken, profile, done) {
     console.log('in the "use" function');
     console.log('accessToken', accessToken);
     console.log('refreshToken', refreshToken);
@@ -17,7 +17,6 @@ passport.use(new GoogleStrategy({
     const emails = profile.emails.map(email => email.value) || [null];
     const imageUrl = (profile?.photos || [null])[0]?.value;
     let user = await User.findOne({ email: { $in: emails } });
-    console.log('b4 user', user);
     if (!user) {
         user = new User({
             email: emails[0],
@@ -28,8 +27,8 @@ passport.use(new GoogleStrategy({
         user.imageUrl = imageUrl;
         await user.save();
     }
-    console.log('after user', user);
-    return cb(null, user);
+    console.log('end user', user);
+    return done(null, user);
   }
 ));
 

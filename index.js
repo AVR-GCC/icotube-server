@@ -2,6 +2,7 @@ const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -21,6 +22,7 @@ const corsConfig = {
     credentials: true,
 };
 
+app.use(morgan('dev'));
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
