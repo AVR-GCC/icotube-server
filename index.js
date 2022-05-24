@@ -8,8 +8,8 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const path = require('path');
 require('./passport.js');
-// const cookieSession = require('cookie-session');
-const session = require('express-session');
+const cookieSession = require('cookie-session');
+// const session = require('express-session');
 // const SQLiteStore = require('connect-sqlite3')(session);
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
@@ -29,13 +29,19 @@ const corsConfig = {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
-app.use(session({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:true,
-    cookie: { maxAge: oneDay },
-    resave: false 
+app.use(cookieSession({ 
+    key: 'session',
+    secret: 'cookieSecret',
+    cookie: {
+        maxAge: oneDay
+    }
 }));
+// app.use(session({
+//     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+//     saveUninitialized:true,
+//     cookie: { maxAge: oneDay },
+//     resave: false 
+// }));
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
