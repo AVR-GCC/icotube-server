@@ -103,9 +103,14 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
+        console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+        console.log('/login/success');
+        console.log('b4 req.session', req.session);
+        console.log('b4 req.user', req.user);
         req.logout();
         res.redirect(process.env.CLIENT_URL);
-        console.log('User Logged out');
+        console.log('after req.session', req.session);
+        console.log('after req.user', req.user);
     } catch (err) {
         console.log('logout error:', err);
         res.send({
@@ -121,7 +126,10 @@ router.get('/logout', logout);
 
 
 router.get('/login/success', async (req, res) => {
-    console.log('login success!!!@@@@@!!! req.user', req.user);
+    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+    console.log('/login/success');
+    console.log('req.session', req.session);
+    console.log('req.user', req.user);
     if (req.user) {
         res.status(200).json({
             success: true,
@@ -146,20 +154,26 @@ router.get('/login/failed', (req, res) => {
 });
 
 router.get('/google', (req, res, next) => {
-    console.log('in the google route!@##!@!#@ authenticating.');
-    const authResult = passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
-    console.log('authResult', authResult);
-    console.log('done!!! returning');
-    return authResult;
+    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+    console.log('/google');
+    console.log('b4 req.session', req.session);
+    console.log('b4 req.user', req.user);
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
+    console.log('after req.session', req.session);
+    console.log('after req.user', req.user);
 });
 
 router.get('/google/callback', (req, res, next) => {
-    console.log('in the google callback route%^$%$^$%&^&%^ authenticating.');
+    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+    console.log('/google/callback');
+    console.log('b4 req.session', req.session);
+    console.log('b4 req.user', req.user);
     passport.authenticate('google', {
         successRedirect: process.env.CLIENT_URL,
         failureRedirect: '/login/failed'
     })(req, res, next);
-    console.log('done!!');
+    console.log('after req.session', req.session);
+    console.log('after req.user', req.user);
 });
 
 module.exports = router;

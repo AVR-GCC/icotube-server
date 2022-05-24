@@ -10,10 +10,8 @@ passport.use(new GoogleStrategy({
     state: true
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log('in the "use" function');
-    // console.log('accessToken', accessToken);
-    // console.log('refreshToken', refreshToken);
-    // console.log('profile', profile);
+    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+    console.log('passport.use cb');
     const emails = profile.emails.map(email => email.value) || [null];
     const imageUrl = (profile?.photos || [null])[0]?.value;
     User.findOne({ email: { $in: emails } }).then(potentialUser => {
@@ -27,8 +25,7 @@ passport.use(new GoogleStrategy({
         user.imageUrl = imageUrl;
       }
       user.save().then(() => {
-        console.log('done', done);
-        console.log('end user', user);
+        console.log('passport.use cb user', user);
         return done(null, user);
       })
     });
@@ -36,12 +33,16 @@ passport.use(new GoogleStrategy({
 ));
 
 passport.serializeUser((user, done) => {
-  console.log('serializeUser', user);
+  console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+  console.log('passport.serializeUser');
+  console.log('user', user);
   done(null, user._id);
 });
 
 passport.deserializeUser((id, done) => {
-  console.log('deserializeUser', id);
+  console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
+  console.log('passport.deserializeUser');
+  console.log('id', id);
   User.findById(id).then(user => {
     console.log('deserializeUser cb user', user);
     return done(null, user);
