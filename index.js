@@ -27,7 +27,7 @@ const corsConfig = {
 // session
 
 app.use(express.static(path.join(__dirname, 'public')));
-const cookieSecret = 'thisismysecrctekeyawddwdwadadawdadawdawdadw';
+const cookieSecret = 'thisismysecrctekeyawddwdwadadawdadawdawdadw2';
 // app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
 app.use(session({
     saveUninitialized:true,
