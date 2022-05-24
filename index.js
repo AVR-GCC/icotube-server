@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const path = require('path');
 require('./passport.js');
-const session = require('express-session');
+const session = require('cookie-session');
 // const SQLiteStore = require('connect-sqlite3')(session);
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
@@ -26,12 +26,7 @@ const corsConfig = {
 // session
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false
-}));
-
+app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
