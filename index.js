@@ -27,10 +27,9 @@ const corsConfig = {
 // session
 
 app.use(express.static(path.join(__dirname, 'public')));
-const cookieSecret = 'thisismysecrctekeyfhrgfgrfrty84fwir767';
+const cookieSecret = 'thisismysecrctekeyawddwdwadadawdadawdawdadw';
 // app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
 app.use(session({
-    secret: cookieSecret,
     saveUninitialized:true,
     cookie: { maxAge: oneDay },
     resave: false
@@ -39,7 +38,7 @@ app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
 app.use(bodyParser.json());
-app.use(cookieParser(cookieSecret));
+app.use(cookieParser());
 
 // ------------ MIDDLEWARE ------------
 
