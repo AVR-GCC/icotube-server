@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const path = require('path');
 require('./passport.js');
-const session = require('cookie-session');
+const cookieSession = require('cookie-session');
 // const SQLiteStore = require('connect-sqlite3')(session);
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
