@@ -145,11 +145,21 @@ router.get('/login/failed', (req, res) => {
     });
 });
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', (req, res, next) => {
+    console.log('in the google route!@##!@!#@ authenticating.');
+    const authResult = passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
+    console.log('authResult', authResult);
+    console.log('done!!! returning');
+    return authResult;
+});
 
-router.get('/google/callback', passport.authenticate('google', {
-    successRedirect: process.env.CLIENT_URL,
-    failureRedirect: '/login/failed'
-}));
+router.get('/google/callback', (req, res, next) => {
+    console.log('in the google callback route%^$%$^$%&^&%^ authenticating.');
+    passport.authenticate('google', {
+        successRedirect: process.env.CLIENT_URL,
+        failureRedirect: '/login/failed'
+    })(req, res, next);
+    console.log('done!!');
+});
 
 module.exports = router;
