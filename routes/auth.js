@@ -36,49 +36,49 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        let { email, password, googleToken, imageUrl } = req.body;
-        let userId, googleEmail, user;
+        let { email, password, imageUrl } = req.body;
+        let user;
         // confirm user
-        if (googleToken) {
-            const clientId = process.env.OAUTH_CLIENT_ID;
-            const client = new OAuth2Client(clientId);
-            const ticket = await client.verifyIdToken({
-                idToken: googleToken,
-                audience: clientId
+        // if (googleToken) {
+        //     const clientId = process.env.OAUTH_CLIENT_ID;
+        //     const client = new OAuth2Client(clientId);
+        //     const ticket = await client.verifyIdToken({
+        //         idToken: googleToken,
+        //         audience: clientId
+        //     });
+        //     const payload = ticket.getPayload();
+        //     userId = payload.sub;
+        //     googleEmail = payload.email;
+        //     if (!userId || !googleEmail) {
+        //         res.status(401).json({
+        //             error: 'Incorrect email or password'
+        //         });
+        //         return;
+        //     }
+        //     user = await Users.findOne({ email: googleEmail });
+        //     if (!user) {
+        //         user = await new Users({
+        //             email: googleEmail,
+        //             imageUrl,
+        //             hash: null
+        //         }).save();
+        //     }
+        //     email = googleEmail;
+        // } else {
+        // }
+        user = await Users.findOne({ email });
+        if (!user) {
+            res.status(401).json({
+                error: 'Incorrect email or password'
             });
-            const payload = ticket.getPayload();
-            userId = payload.sub;
-            googleEmail = payload.email;
-            if (!userId || !googleEmail) {
-                res.status(401).json({
-                    error: 'Incorrect email or password'
-                });
-                return;
-            }
-            user = await Users.findOne({ email: googleEmail });
-            if (!user) {
-                user = await new Users({
-                    email: googleEmail,
-                    imageUrl,
-                    hash: null
-                }).save();
-            }
-            email = googleEmail;
-        } else {
-            user = await Users.findOne({ email });
-            if (!user) {
-                res.status(401).json({
-                    error: 'Incorrect email or password'
-                });
-                return;
-            }
-            const compare = await bcrypt.compare(password, user.hash);
-            if (!compare) {
-                res.status(401).json({
-                    error: 'Incorrect email or password'
-                });
-                return;
-            }
+            return;
+        }
+        const compare = await bcrypt.compare(password, user.hash);
+        if (!compare) {
+            res.status(401).json({
+                error: 'Incorrect email or password'
+            });
+            return;
         }
         if (user && imageUrl && !user.imageUrl) {
             user.imageUrl = imageUrl;
@@ -90,8 +90,7 @@ const login = async (req, res) => {
         const token = jwt.sign(payload, secret, {
             expiresIn: '1h'
         });
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production'? true: false });
-        res.json({ user: omit(user._doc, 'hash') });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).json({ user: omit(user._doc, 'hash') });
     } catch (err) {
         console.log('login error:', err);
         res.send({
@@ -103,14 +102,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-        console.log('/login/success');
-        console.log('b4 req.session', req.session);
-        console.log('b4 req.user', req.user);
         req.logout();
+        res.clearCookie('token');
         res.redirect(process.env.CLIENT_URL);
-        console.log('after req.session', req.session);
-        console.log('after req.user', req.user);
     } catch (err) {
         console.log('logout error:', err);
         res.send({
@@ -126,10 +120,6 @@ router.get('/logout', logout);
 
 
 router.get('/login/success', async (req, res) => {
-    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-    console.log('/login/success');
-    console.log('req.session', req.session);
-    console.log('req.user', req.user);
     if (req.user) {
         res.status(200).json({
             success: true,
@@ -146,7 +136,6 @@ router.get('/login/success', async (req, res) => {
 });
 
 router.get('/login/failed', (req, res) => {
-    console.log('login failed!!!!!!!!!', req);
     res.status(401).json({
         success: false,
         message: 'failed!'
@@ -154,26 +143,14 @@ router.get('/login/failed', (req, res) => {
 });
 
 router.get('/google', (req, res, next) => {
-    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-    console.log('/google');
-    console.log('b4 req.session', req.session);
-    console.log('b4 req.user', req.user);
     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
-    console.log('after req.session', req.session);
-    console.log('after req.user', req.user);
 });
 
 router.get('/google/callback', (req, res, next) => {
-    console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-    console.log('/google/callback');
-    console.log('b4 req.session', req.session);
-    console.log('b4 req.user', req.user);
     passport.authenticate('google', {
         successRedirect: process.env.CLIENT_URL,
         failureRedirect: '/login/failed'
     })(req, res, next);
-    console.log('after req.session', req.session);
-    console.log('after req.user', req.user);
 });
 
 module.exports = router;
