@@ -30,9 +30,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 const cookieSecret = 'thisismysecrctekeyawddwdwadadawdadawdawdadw2';
 // app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
 app.use(session({
+    name: 'session',
     secret: cookieSecret,
-    saveUninitialized:true,
-    cookie: { maxAge: oneDay },
+    saveUninitialized: true,
+    cookie: {
+        maxAge: oneDay,
+        path: "/",
+        secure: true,
+        httpOnly: true
+    },
     resave: false
 }));
 app.use(cors(corsConfig));
