@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { findIndex } = require('lodash');
 
 const wait = (miliseconds) => {
     return new Promise((resolve) => {
@@ -7,7 +8,12 @@ const wait = (miliseconds) => {
 };
 
 const withAuth = async (req, res, next) => {
-    const token = req.cookies.token;
+    let token = req.cookies.token2;
+    if (!token) {
+        console.log(req.rawHeaders);
+        const authorizationIndex = findIndex(req.rawHeaders, h => h === 'Authorization');
+        if (authorizationIndex !== -1) token = req.rawHeaders[authorizationIndex + 1];
+    }
     if (!token) {
         res.status(401).send('Unauthorized: No token provided');
     } else {
