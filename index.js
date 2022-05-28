@@ -5,9 +5,9 @@ const morgan = require('morgan');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const passport = require('passport');
+// const passport = require('passport');
 const path = require('path');
-require('./passport.js');
+// require('./passport.js');
 // const cookieSession = require('cookie-session');
 const session = require('express-session');
 // const SQLiteStore = require('connect-sqlite3')(session);
@@ -44,6 +44,7 @@ app.use(cookieParser(cookieSecret));
 // ------------ MIDDLEWARE ------------
 
 app.use(function(req, res, next) {
+    console.log('req.headers.origin', req.headers.origin);
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', req.headers.origin);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
@@ -51,10 +52,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-app.use(passport.authenticate('session'));
+// app.use(passport.authenticate('session'));
 
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');
