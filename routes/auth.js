@@ -102,7 +102,7 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        req.logout();
+        // req.logout();
         res.clearCookie('token');
         res.redirect(process.env.CLIENT_URL);
     } catch (err) {
