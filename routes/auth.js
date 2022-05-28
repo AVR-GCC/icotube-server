@@ -90,7 +90,7 @@ const login = async (req, res) => {
         const token = jwt.sign(payload, secret, {
             expiresIn: '1h'
         });
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).json({ user: omit(user._doc, 'hash') });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).json({ token, user: omit(user._doc, 'hash') });
     } catch (err) {
         console.log('login error:', err);
         res.send({
