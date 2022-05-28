@@ -8,9 +8,8 @@ const wait = (miliseconds) => {
 };
 
 const withAuth = async (req, res, next) => {
-    let token = req.cookies.token2;
+    let token = req.cookies.token;
     if (!token) {
-        console.log(req.rawHeaders);
         const authorizationIndex = findIndex(req.rawHeaders, h => h === 'Authorization');
         if (authorizationIndex !== -1) token = req.rawHeaders[authorizationIndex + 1];
     }

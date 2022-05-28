@@ -23,8 +23,7 @@ const signup = async (req, res) => {
         const token = jwt.sign(payload, secret, {
             expiresIn: '1h'
         });
-        res.cookie('token', token, { httpOnly: true });
-        res.json({ user: omit(user, ['hash']) });
+        res.cookie('token', token, { httpOnly: true }).json({ token, user: omit(user, ['hash']) });
     } catch (err) {
         console.log('signup error:', err);
         res.send({

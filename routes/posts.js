@@ -4,6 +4,11 @@ const { withAuth } = require('./utils');
 
 const router = express.Router();
 
+const freePostWhitelist = [
+    'ogoun.d@gmail.com',
+    'namershahar@gmail.com'
+];
+
 router.get('/', async (req, res) => {
     try {
         const data = await Posts.find({ active: true });
@@ -45,8 +50,9 @@ router.put('/', withAuth, async (req, res) => {
             startDate,
             endDate
         } = { ...defaults, ...req.body };
+        const autoPublish = freePostWhitelist.includes(req.email);
         const post = new Posts({
-            active: false,
+            active: autoPublish,
             title,
             email,
             description,
@@ -66,7 +72,8 @@ router.put('/', withAuth, async (req, res) => {
         await post.save();
         res.json({
             success: true,
-            post
+            post,
+            autoPublish
         });
     } catch (err) {
         res.json({
