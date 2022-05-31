@@ -5,6 +5,7 @@ const morgan = require('morgan');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const sslRedirect = require('heroku-ssl-redirect');
 // const passport = require('passport');
 const path = require('path');
 // require('./passport.js');
@@ -46,6 +47,7 @@ app.options('*', cors(corsConfig));
 
 app.use(bodyParser.json());
 app.use(cookieParser(cookieSecret));
+app.use(sslRedirect.default());
 
 // ------------ MIDDLEWARE ------------
 
