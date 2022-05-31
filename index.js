@@ -5,7 +5,7 @@ const morgan = require('morgan');
 require('dotenv/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const sslRedirect = require('heroku-ssl-redirect');
+// const sslRedirect = require('heroku-ssl-redirect');
 // const passport = require('passport');
 const path = require('path');
 // require('./passport.js');
@@ -47,12 +47,20 @@ app.options('*', cors(corsConfig));
 
 app.use(bodyParser.json());
 app.use(cookieParser(cookieSecret));
-app.use(sslRedirect.default());
+// app.use(sslRedirect.default());
+if(process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        console.log('req.header(x-forwarded-proto)', req.header('x-forwarded-proto'));
+        if (req.header('x-forwarded-proto') !== 'https')
+            res.redirect(`https://${req.header('host')}${req.url}`);
+        else
+            next();
+    })
+}
 
 // ------------ MIDDLEWARE ------------
 
 app.use(function(req, res, next) {
-    console.log('req.headers.origin', req.headers.origin);
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', req.headers.origin);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
