@@ -48,15 +48,14 @@ app.options('*', cors(corsConfig));
 app.use(bodyParser.json());
 app.use(cookieParser(cookieSecret));
 // app.use(sslRedirect.default());
-if(process.env.NODE_ENV === 'production') {
-    app.use((req, res, next) => {
-        console.log('req.header(x-forwarded-proto)', req.header('x-forwarded-proto'));
-        if (req.header('x-forwarded-proto') !== 'https')
-            res.redirect(`https://${req.header('host')}${req.url}`);
-        else
-            next();
-    })
-}
+// if(process.env.NODE_ENV === 'production') {
+//     app.use((req, res, next) => {
+//         if (req.header('x-forwarded-proto') !== 'https')
+//             res.redirect(`https://${req.header('host')}${req.url}`);
+//         else
+//             next();
+//     })
+// }
 
 // ------------ MIDDLEWARE ------------
 
