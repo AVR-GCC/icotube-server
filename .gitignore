@@ -22,7 +22,7 @@ dist/
 # Maven
 target/
 dist/
-.metadata
+.metadata/
 
 # JetBrains IDE
 .idea/
