@@ -6,53 +6,35 @@ const PostSchema = mongoose.Schema({
         required: true,
         default: false
     },
-    title: {
+    paymentHooks: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Payment'
+    },
+    created: {
+        type: Date,
+        default: Date.now
+    },
+    name: String,
+    email: {
         type: String,
         required: true
     },
+    title: String,
     type: {
         type: String,
         enum: [
             'Platform',
             'Blockchain Service'
         ],
-        required: true,
         default: 'Platform'
     },
-    paymentHooks: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Payment'
-    },
-    email: {
+    shortDescription: {
         type: String,
-        required: true
+        default: ''
     },
     description: {
         type: String,
         default: ''
-    },
-    isWhitelist: {
-        type: Boolean,
-        default: false
-    },
-    fundraisingGoal: Number,
-    ticker: {
-        type: String,
-        required: true
-    },
-    tokenType: {
-        type: String,
-        default: 'ERC20'
-    },
-    homepage: String,
-    videoUrl: {
-        type: String,
-        required: true
-    },
-    icoOrAirdrop: {
-        type: String,
-        enum: ['ICO', 'Airdrop'],
-        default: 'ICO'
     },
     startDate: {
         type: Date,
@@ -62,9 +44,39 @@ const PostSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    created: {
-        type: Date,
-        default: Date.now
+    ticker: String,
+    tokenType: {
+        type: String,
+        default: 'ERC20'
+    },
+    amountPerUser: Number,
+    softCap: Number,
+    cap: Number,
+    totalTokens: Number,
+    availableTokens: Number,
+    minParticipation: Number,
+    maxParticipation: Number,
+    accepts: {
+        type: [String],
+        enum: [
+            'BTC',
+            'Ethereum',
+            'USDT'
+        ],
+        default: 'BTC'
+    },
+    isWhitelist: {
+        type: Boolean,
+        default: false
+    },
+    officialChat: String,
+    github: String,
+    bitcoinTalk: String,
+    logo: String,
+    homepage: String,
+    videoUrl: {
+        type: String,
+        required: true
     }
 });
 

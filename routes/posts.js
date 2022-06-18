@@ -1,6 +1,6 @@
 const express = require('express');
 const Posts = require('../models/Post');
-const { withAuth } = require('./utils');
+const { withAuth, wait } = require('./utils');
 
 const router = express.Router();
 
@@ -27,44 +27,63 @@ router.get('/', async (req, res) => {
 
 router.put('/', withAuth, async (req, res) => {
     try {
-        const defaults = {
-            description: '',
-            fundraisingGoal: 0,
-            isWhitelist: false,
-            tokenType: 'ERC20',
-            homepage: '',
-            icoOrAirdrop: 'ICO',
-            startDate: Date.now,
-            endDate: Date.now
-        }
         const {
-            title,
+            name = '',
             email,
-            description,
-            fundraisingGoal,
-            isWhitelist,
-            ticker,
-            tokenType,
-            homepage,
-            videoUrl,
-            startDate,
-            endDate
-        } = { ...defaults, ...req.body };
+            title = '',
+            type = 'Platform',
+            shortDescription = '',
+            description = '',
+            startDate = new Date(),
+            endDate = new Date(),
+            ticker = '',
+            tokenType = 'ERC20',
+            amountPerUser = 0,
+            softCap = 0,
+            cap = 0,
+            totalTokens = 0,
+            availableTokens = 0,
+            minParticipation = 0,
+            maxParticipation = 0,
+            accepts = 'BTC',
+            isWhitelist = false,
+            officialChat = '',
+            github = '',
+            bitcoinTalk = '',
+            logo = '',
+            homepage = '',
+            videoUrl = ''
+        } = { ...req.body };
         const autoPublish = freePostWhitelist.includes(req.email);
         const post = new Posts({
             active: autoPublish,
-            title,
+            paymentHooks: [],
+            created: new Date(),
+            name,
             email,
+            title,
+            type,
+            shortDescription,
             description,
-            fundraisingGoal,
-            isWhitelist,
-            ticker,
-            tokenType,
-            homepage,
-            videoUrl,
             startDate,
             endDate,
-            created: new Date()
+            ticker,
+            tokenType,
+            amountPerUser,
+            softCap,
+            cap,
+            totalTokens,
+            availableTokens,
+            minParticipation,
+            maxParticipation,
+            accepts,
+            isWhitelist,
+            officialChat,
+            github,
+            bitcoinTalk,
+            logo,
+            homepage,
+            videoUrl
         });
         // console.log('about to wait!');
         // await wait(10000);
