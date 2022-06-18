@@ -6,6 +6,8 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const Users = require('../models/User');
 const { omit } = require('lodash');
+const { withAuth } = require('./utils');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -99,6 +101,19 @@ const login = async (req, res) => {
     }
 };
 
+const getMe = async (req, res) => {
+    try {
+        const user = await User.findOne({ email: req.email });
+        res.json({ success: true, user: omit(user._doc, 'hash') });
+    } catch (err) {
+        console.log('login error:', err);
+        res.send({
+            success: false,
+            error: err
+        });
+    }
+};
+
 const logout = async (req, res) => {
     try {
         // req.logout();
@@ -116,6 +131,7 @@ const logout = async (req, res) => {
 router.post('/signup', signup);
 router.post('/login', login);
 router.get('/logout', logout);
+router.get('/get-me', withAuth, getMe)
 
 
 router.get('/login/success', async (req, res) => {
