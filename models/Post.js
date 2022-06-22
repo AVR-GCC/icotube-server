@@ -14,7 +14,6 @@ const PostSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    name: String,
     email: {
         type: String,
         required: true
@@ -22,10 +21,6 @@ const PostSchema = mongoose.Schema({
     title: String,
     type: {
         type: String,
-        enum: [
-            'Platform',
-            'Blockchain Service'
-        ],
         default: 'Platform'
     },
     shortDescription: {
@@ -74,10 +69,7 @@ const PostSchema = mongoose.Schema({
     bitcoinTalk: String,
     logo: String,
     homepage: String,
-    videoUrl: {
-        type: String,
-        required: true
-    }
+    videoUrl: String
 });
 
 module.exports = mongoose.model('Posts', PostSchema);

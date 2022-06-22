@@ -28,10 +28,10 @@ router.get('/', async (req, res) => {
 router.put('/', withAuth, async (req, res) => {
     try {
         const {
-            name = '',
             email,
             title = '',
             type = 'Platform',
+            typeOther = '',
             shortDescription = '',
             description = '',
             startDate = new Date(),
@@ -59,10 +59,9 @@ router.put('/', withAuth, async (req, res) => {
             active: autoPublish,
             paymentHooks: [],
             created: new Date(),
-            name,
             email,
             title,
-            type,
+            type: type === 'Other' ? typeOther : type,
             shortDescription,
             description,
             startDate,
