@@ -9,6 +9,30 @@ const freePostWhitelist = [
     'namershahar@gmail.com'
 ];
 
+router.get('/:_id', async (req, res) => {
+    try {
+        const { _id } = req.params;
+        const posts = await Posts.find({ _id, active: true });
+        if (posts.length) {
+            res.send({
+                success: true,
+                data: posts[0]
+            });
+        } else {
+            res.send({
+                success: false,
+                error: 'Post not found'
+            });
+        }
+    } catch (err) {
+        console.log('get errorr!!', err);
+        res.send({
+            success: false,
+            error: err
+        });
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         const data = await Posts.find({ active: true });
@@ -28,6 +52,7 @@ router.get('/', async (req, res) => {
 router.put('/', withAuth, async (req, res) => {
     try {
         const {
+            _id = null,
             email,
             title = '',
             type = 'Platform',
@@ -54,36 +79,40 @@ router.put('/', withAuth, async (req, res) => {
             homepage = '',
             videoUrl = ''
         } = { ...req.body };
+        let post;
+        if (_id && req.email === email) {
+            post = await Posts.findById(_id);
+        } else {
+            post = new Posts();
+        }
         const autoPublish = freePostWhitelist.includes(req.email);
-        const post = new Posts({
-            active: autoPublish,
-            paymentHooks: [],
-            created: new Date(),
-            email,
-            title,
-            type: type === 'Other' ? typeOther : type,
-            shortDescription,
-            description,
-            startDate,
-            endDate,
-            ticker,
-            tokenType,
-            amountPerUser,
-            softCap,
-            cap,
-            totalTokens,
-            availableTokens,
-            minParticipation,
-            maxParticipation,
-            accepts,
-            isWhitelist,
-            officialChat,
-            github,
-            bitcoinTalk,
-            logo,
-            homepage,
-            videoUrl
-        });
+        post.active = post.active || autoPublish;
+        post.paymentHooks = post.paymentHooks || [];
+        post.email = email || post.email;
+        post.title = title || post.title;
+        const endType = type === 'Other' ? typeOther : type;
+        post.type = endType || post.type;
+        post.shortDescription = shortDescription || post.shortDescription;
+        post.description = description || post.description;
+        post.startDate = startDate || post.startDate;
+        post.endDate = endDate || post.endDate;
+        post.ticker = ticker || post.ticker;
+        post.tokenType = tokenType || post.tokenType;
+        post.amountPerUser = amountPerUser || post.amountPerUser;
+        post.softCap = softCap || post.softCap;
+        post.cap = cap || post.cap;
+        post.totalTokens = totalTokens || post.totalTokens;
+        post.availableTokens = availableTokens || post.availableTokens;
+        post.minParticipation = minParticipation || post.minParticipation;
+        post.maxParticipation = maxParticipation || post.maxParticipation;
+        post.accepts = accepts || post.accepts;
+        post.isWhitelist = isWhitelist || post.isWhitelist;
+        post.officialChat = officialChat || post.officialChat;
+        post.github = github || post.github;
+        post.bitcoinTalk = bitcoinTalk || post.bitcoinTalk;
+        post.logo = logo || post.logo;
+        post.homepage = homepage || post.homepage;
+        post.videoUrl = videoUrl || post.videoUrl;
         // console.log('about to wait!');
         // await wait(10000);
         // console.log('finished waiting...');
