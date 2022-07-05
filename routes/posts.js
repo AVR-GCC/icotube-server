@@ -33,6 +33,29 @@ router.get('/:_id', async (req, res) => {
     }
 });
 
+router.delete('/:_id', withAuth, async (req, res) => {
+    try {
+        const { _id } = req.params;
+        const posts = await Posts.find({ _id, active: true });
+        if (posts.length && posts[0].email === req.email) {
+            posts[0].active = false;
+            await posts[0].save();
+            res.send({ success: true });
+            return;
+        }
+        res.send({
+            success: false,
+            error: "post not found"
+        });
+    } catch (err) {
+        console.log('get errorr!!', err);
+        res.send({
+            success: false,
+            error: err
+        });
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         const data = await Posts.find({ active: true });
