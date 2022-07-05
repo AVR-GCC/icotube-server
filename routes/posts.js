@@ -82,6 +82,9 @@ router.put('/', withAuth, async (req, res) => {
         let post;
         if (_id && req.email === email) {
             post = await Posts.findById(_id);
+            if (post.email !== email) {
+                post = new Posts();
+            }
         } else {
             post = new Posts();
         }
