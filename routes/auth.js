@@ -89,7 +89,7 @@ const login = async (req, res) => {
         const payload = { email };
         const secret = process.env.JWT_SECRET;
         const token = jwt.sign(payload, secret, {
-            expiresIn: '1h'
+            expiresIn: '1d'
         });
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' }).json({ token, user: omit(user._doc, 'hash') });
     } catch (err) {
