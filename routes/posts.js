@@ -1,6 +1,6 @@
 const express = require('express');
 const Posts = require('../models/Post');
-const { withAuth, wait } = require('./utils');
+const { withAuth, defined, wait } = require('./utils');
 
 const router = express.Router();
 
@@ -94,7 +94,7 @@ router.put('/', withAuth, async (req, res) => {
             minParticipation = 0,
             maxParticipation = 0,
             accepts = 'BTC',
-            isWhitelist = false,
+            isWhitelist = null,
             officialChat = '',
             github = '',
             bitcoinTalk = '',
@@ -132,7 +132,7 @@ router.put('/', withAuth, async (req, res) => {
         post.minParticipation = minParticipation || post.minParticipation;
         post.maxParticipation = maxParticipation || post.maxParticipation;
         post.accepts = accepts || post.accepts;
-        post.isWhitelist = isWhitelist || post.isWhitelist;
+        post.isWhitelist = defined(isWhitelist) ? isWhitelist : post.isWhitelist;
         post.officialChat = officialChat || post.officialChat;
         post.github = github || post.github;
         post.bitcoinTalk = bitcoinTalk || post.bitcoinTalk;

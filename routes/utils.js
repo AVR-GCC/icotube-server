@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { findIndex } = require('lodash');
 
+const defined = (value) => value !== null && value !== undefined;
+
 const wait = (miliseconds) => {
     return new Promise((resolve) => {
         setTimeout(resolve, miliseconds);
@@ -35,6 +37,7 @@ const oneHour = 60 * oneMinute;
 const oneDay = 24 * oneHour;
 
 module.exports = {
+    defined,
     wait,
     withAuth,
     oneMinute,
