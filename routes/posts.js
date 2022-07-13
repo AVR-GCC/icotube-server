@@ -1,13 +1,8 @@
 const express = require('express');
 const Posts = require('../models/Post');
-const { withAuth, defined, wait } = require('./utils');
+const { withAuth, defined, wait, freePostWhitelist } = require('./utils');
 
 const router = express.Router();
-
-const freePostWhitelist = [
-    'ogoun.d@gmail.com',
-    'namershahar@gmail.com'
-];
 
 router.get('/:_id', async (req, res) => {
     try {
