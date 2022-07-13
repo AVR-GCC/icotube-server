@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 const { findIndex } = require('lodash');
 
+
+const freePostWhitelist = [
+    'ogoun.d@gmail.com',
+    'namershahar@gmail.com'
+];
+
 const defined = (value) => value !== null && value !== undefined;
 
 const wait = (miliseconds) => {
@@ -42,5 +48,6 @@ module.exports = {
     withAuth,
     oneMinute,
     oneHour,
-    oneDay
+    oneDay,
+    freePostWhitelist
 }
