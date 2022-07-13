@@ -4,7 +4,8 @@ const { findIndex } = require('lodash');
 
 const freePostWhitelist = [
     'ogoun.d@gmail.com',
-    'namershahar@gmail.com'
+    'namershahar@gmail.com',
+    'icotube@proton.me'
 ];
 
 const defined = (value) => value !== null && value !== undefined;
