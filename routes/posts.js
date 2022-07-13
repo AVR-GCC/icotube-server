@@ -32,7 +32,8 @@ router.delete('/:_id', withAuth, async (req, res) => {
     try {
         const { _id } = req.params;
         const posts = await Posts.find({ _id, active: true });
-        if (posts.length && posts[0].email === req.email) {
+        const canEdit = posts.length && (posts[0].email === req.email || freePostWhitelist.includes(req.email));
+        if (canEdit) {
             posts[0].active = false;
             await posts[0].save();
             res.send({ success: true });
@@ -98,7 +99,7 @@ router.put('/', withAuth, async (req, res) => {
             videoUrl = ''
         } = { ...req.body };
         let post;
-        if (_id && req.email === email) {
+        if (_id && (req.email === email || freePostWhitelist.includes(req.email))) {
             post = await Posts.findById(_id);
             if (post.email !== email) {
                 post = new Posts();
