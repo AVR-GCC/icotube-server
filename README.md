@@ -1,29 +1,15 @@
-# README #
+# ICO Tube back end #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+The server side for my new ico listing site, standard express server, WIP
 
-### What is this repository for? ###
+# Set Up #
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- To run, clone this repo
 
-### How do I get set up? ###
+- cd to the folder
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+- run `npm i`
 
-### Contribution guidelines ###
+- and then `npm run test`
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+- enjoy!
