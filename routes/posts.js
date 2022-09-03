@@ -54,7 +54,18 @@ router.delete('/:_id', withAuth, async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const data = await Posts.find({ active: true });
+        const {
+            skip = 0,
+            limit = 8,
+            sort = { startDate: -1 },
+            filter = {}
+        } = req.query;
+
+        const data = await Posts
+            .find({ ...JSON.parse(filter), active: true })
+            .sort(JSON.parse(sort))
+            .skip(skip)
+            .limit(limit);
         res.send({
             success: true,
             data
