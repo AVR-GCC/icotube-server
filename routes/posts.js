@@ -90,7 +90,7 @@ router.put('/', withAuth, async (req, res) => {
             shortDescription = '',
             description = '',
             startDate = new Date(),
-            endDate = new Date(),
+            endDate = null,
             ticker = '',
             tokenType = 'ERC20',
             amountPerUser = 0,
@@ -128,7 +128,7 @@ router.put('/', withAuth, async (req, res) => {
         post.shortDescription = shortDescription || post.shortDescription;
         post.description = description || post.description;
         post.startDate = startDate || post.startDate;
-        post.endDate = endDate || post.endDate;
+        post.endDate = endDate || endDate === null ? endDate : post.endDate;
         post.ticker = ticker || post.ticker;
         post.tokenType = tokenType || post.tokenType;
         post.amountPerUser = amountPerUser || post.amountPerUser;
