@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
     try {
         const {
             skip = 0,
-            limit = 8,
+            limit,
             sort = { startDate: -1 },
             filter = {}
         } = req.query;
