@@ -59,15 +59,7 @@ const PostSchema = mongoose.Schema({
     availableTokens: Number,
     minParticipation: Number,
     maxParticipation: Number,
-    accepts: {
-        type: [String],
-        enum: [
-            'BTC',
-            'Ethereum',
-            'USDT'
-        ],
-        default: 'BTC'
-    },
+    accepts: String,
     isWhitelist: {
         type: Boolean,
         default: false
