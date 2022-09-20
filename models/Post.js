@@ -23,6 +23,14 @@ const PostSchema = mongoose.Schema({
         type: String,
         default: 'Platform'
     },
+    tokenRole: {
+        type: String,
+        default: 'Utility'
+    },
+    importantNote: {
+        type: String,
+        default: ''
+    },
     shortDescription: {
         type: String,
         default: ''
@@ -64,6 +72,7 @@ const PostSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    whitepaperLink: String,
     officialChat: String,
     github: String,
     bitcoinTalk: String,

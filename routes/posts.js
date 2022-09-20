@@ -87,6 +87,9 @@ router.put('/', withAuth, async (req, res) => {
             title = '',
             type = 'Platform',
             typeOther = '',
+            tokenRole = '',
+            tokenRoleOther = '',
+            importantNote = '',
             shortDescription = '',
             description = '',
             startDate = new Date(),
@@ -102,6 +105,7 @@ router.put('/', withAuth, async (req, res) => {
             maxParticipation = 0,
             accepts = 'BTC',
             isWhitelist = null,
+            whitepaperLink = '',
             officialChat = '',
             github = '',
             bitcoinTalk = '',
@@ -125,7 +129,11 @@ router.put('/', withAuth, async (req, res) => {
         post.title = title || post.title;
         const endType = type === 'Other' ? typeOther : type;
         post.type = endType || post.type;
+        const endTokenRole = tokenRole === 'Other' ? tokenRoleOther : tokenRole;
+        post.tokenRole = endTokenRole || post.tokenRole;
         post.shortDescription = shortDescription || post.shortDescription;
+        post.importantNote = importantNote || post.importantNote;
+        post.whitepaperLink = whitepaperLink || post.whitepaperLink;
         post.description = description || post.description;
         post.startDate = startDate || post.startDate;
         post.endDate = endDate || endDate === null ? endDate : post.endDate;
