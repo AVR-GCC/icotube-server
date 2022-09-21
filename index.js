@@ -16,6 +16,7 @@ const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
+const alertRouter = require('./routes/alert');
 const { withAuth, oneDay } = require('./routes/utils');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -97,6 +98,7 @@ app.use('/config', configRouter);
 app.use('/posts', postsRouter);
 app.use('/payment', paymentsRouter);
 app.use('/auth', authRouter);
+app.use('/alert', alertRouter);
 
 // ------------ DB ------------
 
