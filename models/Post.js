@@ -35,6 +35,10 @@ const PostSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    fundraisingGoal: {
+        type: Number,
+        default: 0
+    },
     description: {
         type: String,
         default: ''

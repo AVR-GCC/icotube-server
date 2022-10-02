@@ -91,6 +91,7 @@ router.put('/', withAuth, async (req, res) => {
             tokenRoleOther = '',
             importantNote = '',
             shortDescription = '',
+            fundraisingGoal = 0,
             description = '',
             startDate = new Date(),
             endDate = null,
@@ -132,6 +133,7 @@ router.put('/', withAuth, async (req, res) => {
         const endTokenRole = tokenRole === 'Other' ? tokenRoleOther : tokenRole;
         post.tokenRole = endTokenRole || post.tokenRole;
         post.shortDescription = shortDescription || post.shortDescription;
+        post.fundraisingGoal = fundraisingGoal || post.fundraisingGoal;
         post.importantNote = importantNote || post.importantNote;
         post.whitepaperLink = whitepaperLink || post.whitepaperLink;
         post.description = description || post.description;
