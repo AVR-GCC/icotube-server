@@ -105,6 +105,7 @@ router.put('/', withAuth, async (req, res) => {
             minParticipation = 0,
             maxParticipation = 0,
             coinExplorerLink = '',
+            linkedinLink = '',
             accepts = '',
             isWhitelist = null,
             whitepaperLink = '',
@@ -158,6 +159,7 @@ router.put('/', withAuth, async (req, res) => {
         post.homepage = homepage || post.homepage;
         post.videoUrl = videoUrl || post.videoUrl;
         post.coinExplorerLink = coinExplorerLink || post.coinExplorerLink;
+        post.linkedinLink = linkedinLink || post.linkedinLink;
         // console.log('about to wait!');
         // await wait(10000);
         // console.log('finished waiting...');

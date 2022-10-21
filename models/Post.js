@@ -76,6 +76,7 @@ const PostSchema = mongoose.Schema({
     homepage: String,
     videoUrl: String,
     coinExplorerLink: String,
+    linkedinLink: String
 });
 
 module.exports = mongoose.model('Posts', PostSchema);
