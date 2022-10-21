@@ -74,7 +74,8 @@ const PostSchema = mongoose.Schema({
     bitcoinTalk: String,
     logo: String,
     homepage: String,
-    videoUrl: String
+    videoUrl: String,
+    coinExplorerLink: String,
 });
 
 module.exports = mongoose.model('Posts', PostSchema);
