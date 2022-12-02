@@ -19,14 +19,8 @@ const PostSchema = mongoose.Schema({
         required: true
     },
     title: String,
-    type: {
-        type: String,
-        default: 'Platform'
-    },
-    tokenRole: {
-        type: String,
-        default: 'Utility'
-    },
+    type: String,
+    tokenRole: String,
     importantNote: {
         type: String,
         default: ''
@@ -52,10 +46,7 @@ const PostSchema = mongoose.Schema({
         default: Date.now
     },
     ticker: String,
-    tokenType: {
-        type: String,
-        default: 'ERC20'
-    },
+    tokenType: String,
     amountPerUser: Number,
     softCap: Number,
     cap: Number,
@@ -76,7 +67,7 @@ const PostSchema = mongoose.Schema({
     homepage: String,
     videoUrl: String,
     coinExplorerLink: String,
-    linkedinLink: String
+    linkedinLink: String,
 });
 
 module.exports = mongoose.model('Posts', PostSchema);
