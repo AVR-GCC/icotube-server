@@ -110,5 +110,5 @@ mongoose.connect(dbLink, () => {
 
 
 app.listen(port, () => {
-    console.log(`ICO gallery listening at http://localhost:${port}`)
+    console.log(`ICOTube listening at http://localhost:${port}`)
 })
