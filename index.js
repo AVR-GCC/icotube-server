@@ -110,5 +110,6 @@ mongoose.connect(dbLink, () => {
 
 
 app.listen(port, () => {
+    console.log('listin');
     console.log(`ICO gallery listening at http://localhost:${port}`)
 })
