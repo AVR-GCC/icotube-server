@@ -16,25 +16,39 @@ const wait = (miliseconds) => {
     });
 };
 
-const withAuth = async (req, res, next) => {
+const getEmail = async (req) => {
+    let email;
     let token = req.cookies.token;
     if (!token) {
         const authorizationIndex = findIndex(req.rawHeaders, h => h === 'Authorization');
         if (authorizationIndex !== -1) token = req.rawHeaders[authorizationIndex + 1];
     }
-    if (!token) {
-        res.status(401).send('Unauthorized: No token provided');
-    } else {
+    if (token) {
+        const secret = process.env.JWT_SECRET;
+        let decoded;
         try {
-            const secret = process.env.JWT_SECRET;
-            const decoded = await jwt.verify(token, secret);
-            req.email = decoded.email;
-            next();
+            decoded = await jwt.verify(token, secret);
+            email = decoded.email;
         } catch (e) {
-            console.log('authorization failed', e);
-            res.status(401).send('Unauthorized: Token expired');
+            email = null;
         }
     }
+    return email;
+};
+
+const getAuth = async (req, _, next) => {
+    req.email = await getEmail(req);
+    next();
+};
+
+const withAuth = async (req, res, next) => {
+    const email = await getEmail(req);
+    if (!email) {
+        res.status(401).send('Unauthorized: No token provided');
+        return;
+    }
+    req.email = email;
+    next();
 };
 
 const oneMinute = 60 * 1000;
@@ -47,6 +61,7 @@ module.exports = {
     defined,
     wait,
     withAuth,
+    getAuth,
     oneMinute,
     oneHour,
     oneDay,
