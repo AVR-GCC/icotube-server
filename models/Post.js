@@ -10,6 +10,10 @@ const PostSchema = mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Payment'
     },
+    likes: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'User'
+    },
     created: {
         type: Date,
         default: Date.now

@@ -8,6 +8,13 @@ const freePostWhitelist = [
     'icotube@proton.me'
 ];
 
+const toClientPost = (post, userId) => {
+    const res = { ...post._doc };
+    res.isLiked = userId ? res.likes.includes(userId) : false;
+    res.likes = res.likes.length;
+    return res;
+}
+
 const defined = (value) => value !== null && value !== undefined;
 
 const wait = (miliseconds) => {
@@ -58,6 +65,7 @@ const oneHour = 60 * oneMinute;
 const oneDay = 24 * oneHour;
 
 module.exports = {
+    toClientPost,
     defined,
     wait,
     withAuth,

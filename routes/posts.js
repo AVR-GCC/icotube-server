@@ -1,6 +1,8 @@
 const express = require('express');
+const { findIndex, filter } = require('lodash');
+const User = require('../models/User');
 const Posts = require('../models/Post');
-const { withAuth, defined, wait, freePostWhitelist } = require('./utils');
+const { withAuth, getAuth, defined, wait, freePostWhitelist, toClientPost } = require('./utils');
 
 const router = express.Router();
 
@@ -52,7 +54,7 @@ router.delete('/:_id', withAuth, async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', getAuth, async (req, res) => {
     try {
         const {
             skip = 0,
@@ -61,11 +63,20 @@ router.get('/', async (req, res) => {
             filter = {}
         } = req.query;
 
-        const data = await Posts
+        const rawData = await Posts
             .find({ ...JSON.parse(filter), active: true })
             .sort(JSON.parse(sort))
             .skip(skip)
             .limit(limit);
+
+        let userId;
+        if (req.email) {
+            const user = await User.findOne({ email: req.email });
+            userId = user._id;
+        }
+
+        const data = rawData.map(d => toClientPost(d, userId));
+
         res.send({
             success: true,
             data
@@ -73,6 +84,33 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.log('get errorr!!', err);
         res.send({
+            success: false,
+            error: err
+        });
+    }
+});
+
+router.put('/:_id/like', withAuth, async (req, res) => {
+    try {
+        const { _id } = req.params;
+        const post = await Posts.findOne({ _id, active: true });
+        const user = await User.findOne({ email: req.email });
+        let likes = [...post.likes];
+        const userIndex = findIndex(likes, e => e + '' === user._id + '');
+        const currentlyLikes = userIndex === -1;
+        if (currentlyLikes) {
+            likes.push(user._id);
+        } else {
+            likes = filter(likes, uid => uid + '' !== user._id + '');
+        }
+        post.likes = [...likes];
+        await post.save();
+        res.json({
+            success: true,
+            currentlyLikes
+        });
+    } catch (err) {
+        res.json({
             success: false,
             error: err
         });
