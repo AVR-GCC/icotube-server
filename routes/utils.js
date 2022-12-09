@@ -3,9 +3,8 @@ const { findIndex } = require('lodash');
 
 
 const freePostWhitelist = [
-    'ogoun.d@gmail.com',
-    'namershahar@gmail.com',
-    'icotube@proton.me'
+    'icotube@proton.me',
+    'icotube2023@proton.me'
 ];
 
 const toClientPost = (post, userId) => {
