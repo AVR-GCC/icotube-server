@@ -110,5 +110,5 @@ mongoose.connect(dbLink, () => {
 
 
 app.listen(port, () => {
-    console.log(`ICOTube listening at http://localhost:${port}`)
+    console.log(`ICOTube server listening at http://localhost:${port}`)
 })
