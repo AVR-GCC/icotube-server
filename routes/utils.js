@@ -2,10 +2,7 @@ const jwt = require('jsonwebtoken');
 const { findIndex } = require('lodash');
 
 
-const freePostWhitelist = [
-    'icotube@proton.me',
-    'icotube2023@proton.me'
-];
+const freePostWhitelist = process.env.FREE_POST_WHITELIST.split(';');
 
 const toClientPost = (post, userId) => {
     const res = { ...post._doc };
