@@ -1,5 +1,4 @@
 const express = require('express');
-require('dotenv/config');
 const { freePostWhitelist } = require('./utils');
 
 const router = express.Router();
