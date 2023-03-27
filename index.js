@@ -57,6 +57,8 @@ app.use(cookieParser(cookieSecret));
 
 // ------------ session ------------
 
+app.set('trust proxy', 1);
+
 const sessionStore = MongoStore.create({
     mongoUrl: dbLink,
     crypto: {
@@ -71,6 +73,7 @@ const sessionMiddleware = session({
     resave: false,
     store: sessionStore,
     cookie: {
+        sameSite: 'none',
         maxAge: oneDay,
         path: "/",
         secure: true,
