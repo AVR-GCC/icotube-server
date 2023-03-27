@@ -12,6 +12,7 @@ const session = require('express-session');
 
 const morgan = require('morgan');
 
+require('dotenv/config');
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
@@ -19,7 +20,7 @@ const authRouter = require('./routes/auth');
 const alertRouter = require('./routes/alert');
 
 const { withAuth, oneDay } = require('./routes/utils');
-require('dotenv/config');
+
 const path = require('path');
 
 // const sslRedirect = require('heroku-ssl-redirect');
