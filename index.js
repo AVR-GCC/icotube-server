@@ -1,64 +1,88 @@
 const express = require('express');
-const cors = require('cors');
+
 const mongoose = require('mongoose');
-const morgan = require('morgan');
-require('dotenv/config');
+const MongoStore = require('connect-mongo');
+
+const cors = require('cors');
+
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// const sslRedirect = require('heroku-ssl-redirect');
-// const passport = require('passport');
-const path = require('path');
-// require('./passport.js');
-// const cookieSession = require('cookie-session');
+
 const session = require('express-session');
-// const SQLiteStore = require('connect-sqlite3')(session);
+
+const morgan = require('morgan');
+
 const postsRouter = require('./routes/posts');
 const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
 const alertRouter = require('./routes/alert');
+
 const { withAuth, oneDay } = require('./routes/utils');
+require('dotenv/config');
+const path = require('path');
+
+// const sslRedirect = require('heroku-ssl-redirect');
+// const passport = require('passport');
+// require('./passport.js');
+
 const app = express();
 const port = process.env.PORT || 5000;
+
+// ------------ DB ------------
+
+const dbLink = process.env.DB_LINK;
+
+mongoose.set('strictQuery', false);
+
+mongoose.connect(dbLink).then(() => console.log('Connected to DB!: ', dbLink));
+
+// ------------ cors ------------
 
 const corsConfig = {
     origin: true,
     credentials: true,
 };
 
-// session
-
-app.use(express.static(path.join(__dirname, 'public')));
-const cookieSecret = process.env.COOKIE_SECRET;
-// app.use(cookieSession({ name: "session", keys: ["lama"], maxAge: oneDay }));
-app.use(session({
-    name: 'session',
-    secret: cookieSecret,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: oneDay,
-        path: "/",
-        secure: true,
-        httpOnly: true
-    },
-    resave: false
-}));
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
+// ------------ parsing ------------
+
+const cookieSecret = process.env.COOKIE_SECRET;
+
 app.use(bodyParser.json());
 app.use(cookieParser(cookieSecret));
-// app.use(sslRedirect.default());
-// if(process.env.NODE_ENV === 'production') {
-//     app.use((req, res, next) => {
-//         if (req.header('x-forwarded-proto') !== 'https')
-//             res.redirect(`https://${req.header('host')}${req.url}`);
-//         else
-//             next();
-//     })
-// }
 
-// ------------ MIDDLEWARE ------------
+// ------------ session ------------
+
+const sessionStore = MongoStore.create({
+    mongoUrl: dbLink,
+    crypto: {
+        secret: cookieSecret
+    }
+});
+
+const sessionMiddleware = session({
+    name: 'session',
+    secret: cookieSecret,
+    saveUninitialized: true,
+    resave: false,
+    store: sessionStore,
+    cookie: {
+        maxAge: oneDay,
+        path: "/",
+        secure: false,
+        httpOnly: true
+    }
+});
+app.use(sessionMiddleware);
+
+// ------------ static ------------
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ------------ align headers ------------
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Credentials', true);
@@ -68,21 +92,15 @@ app.use(function(req, res, next) {
     next();
 });
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+// ------------ log ------------
 
-// app.use(passport.authenticate('session'));
+app.use(morgan('dev'));
+
+// ------------ routes ------------
 
 app.get('/check-auth', withAuth, function(req, res) {
     res.send('The password is potato');
 });
-
-// logger
-
-app.use(morgan('dev'));
-
-
-// ------------ ROUTES ------------
 
 app.get('/', async (req, res) => {
     try {
@@ -100,15 +118,21 @@ app.use('/payment', paymentsRouter);
 app.use('/auth', authRouter);
 app.use('/alert', alertRouter);
 
-// ------------ DB ------------
-
-const dbLink = process.env.DB_LINK;
-
-mongoose.connect(dbLink, () => {
-    console.log('Connected to DB!: ', dbLink);
-});
-
-
 app.listen(port, () => {
     console.log(`ICOTube listening at http://localhost:${port}`)
-})
+});
+
+// app.use(sslRedirect.default());
+// if(process.env.NODE_ENV === 'production') {
+//     app.use((req, res, next) => {
+//         if (req.header('x-forwarded-proto') !== 'https')
+//             res.redirect(`https://${req.header('host')}${req.url}`);
+//         else
+//             next();
+//     })
+// }
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// app.use(passport.authenticate('session'));
