@@ -73,7 +73,7 @@ const sessionMiddleware = session({
     cookie: {
         maxAge: oneDay,
         path: "/",
-        secure: false,
+        secure: true,
         httpOnly: true
     }
 });
