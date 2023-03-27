@@ -77,7 +77,6 @@ const sessionMiddleware = session({
         httpOnly: true
     }
 });
-app.use(sessionMiddleware);
 
 // ------------ static ------------
 
@@ -113,7 +112,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.use('/config', configRouter);
+app.use('/config', sessionMiddleware, configRouter);
 app.use('/posts', postsRouter);
 app.use('/payment', paymentsRouter);
 app.use('/auth', authRouter);
