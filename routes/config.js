@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        console.log(req.session.count);
+        console.log('req.session', req.session);
         if (req.session.count) {
             req.session.count++;
         } else {
