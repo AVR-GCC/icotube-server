@@ -76,7 +76,7 @@ const sessionMiddleware = session({
         sameSite: 'none',
         maxAge: oneDay,
         path: "/",
-        secure: true,
+        secure: process.env.NODE_ENV === 'prod',
         httpOnly: true
     }
 });
