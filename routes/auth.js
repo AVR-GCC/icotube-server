@@ -72,7 +72,7 @@ router.get('/login/success', loginSuccess);
 
 router.post('/signup', localSignup);
 router.post('/login', localLogin);
-router.get('/logout', isAuth, logout);
+router.get('/logout', logout);
 
 module.exports = router;
 
