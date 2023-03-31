@@ -68,7 +68,7 @@ const loginSuccess = async (req, res) => {
     }
 };
 
-router.get('/login/success', isAuth, loginSuccess);
+router.get('/login/success', loginSuccess);
 
 router.post('/signup', localSignup);
 router.post('/login', localLogin);
