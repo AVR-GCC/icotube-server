@@ -104,6 +104,8 @@ app.use(passport.session());
 
 // test passport
 app.use((req, _, next) => {
+    console.log('-=-=-=-=-=-=-=-=-');
+    console.log(req.originalUrl);
     console.log('session:', req.session);
     console.log('user:', req.user);
     next();
