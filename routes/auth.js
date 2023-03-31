@@ -45,6 +45,7 @@ const localLogin = passport.authenticate('local', {
 
 const logout = async (req, res) => {
     try {
+        req.session.destroy();
         req.logout();
         res.redirect(process.env.CLIENT_URL);
     } catch (err) {
