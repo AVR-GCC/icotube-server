@@ -103,11 +103,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // test passport
-// app.use((req, _, next) => {
-//     console.log('session:', req.session);
-//     console.log('user:', req.user);
-//     next();
-// });
+app.use((req, _, next) => {
+    console.log('session:', req.session);
+    console.log('user:', req.user);
+    next();
+});
 
 // ------------ log ------------
 
