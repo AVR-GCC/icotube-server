@@ -10,6 +10,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    salt: {
+        type: String,
+        required: false
+    },
     imageUrl: {
         type: String,
         required: false

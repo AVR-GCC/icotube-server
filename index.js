@@ -19,13 +19,13 @@ const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
 const alertRouter = require('./routes/alert');
 
-const { withAuth, oneDay } = require('./routes/utils');
+const { isAuth, oneDay } = require('./routes/utils');
 
 const path = require('path');
 
 // const sslRedirect = require('heroku-ssl-redirect');
-// const passport = require('passport');
-// require('./passport.js');
+const passport = require('passport');
+require('./config/passport.js');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -81,6 +81,8 @@ const sessionMiddleware = session({
     }
 });
 
+app.use(sessionMiddleware);
+
 // ------------ static ------------
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -95,13 +97,25 @@ app.use(function(req, res, next) {
     next();
 });
 
+// ------------ passport ------------
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// test passport
+// app.use((req, _, next) => {
+//     console.log('session:', req.session);
+//     console.log('user:', req.user);
+//     next();
+// });
+
 // ------------ log ------------
 
 app.use(morgan('dev'));
 
 // ------------ routes ------------
 
-app.get('/check-auth', withAuth, function(req, res) {
+app.get('/check-auth', isAuth, function(req, res) {
     res.send('The password is potato');
 });
 
@@ -115,7 +129,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.use('/config', sessionMiddleware, configRouter);
+app.use('/config', configRouter);
 app.use('/posts', postsRouter);
 app.use('/payment', paymentsRouter);
 app.use('/auth', authRouter);
@@ -134,8 +148,3 @@ app.listen(port, () => {
 //             next();
 //     })
 // }
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.use(passport.authenticate('session'));

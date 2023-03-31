@@ -2,7 +2,7 @@ const express = require('express');
 const { findIndex, filter } = require('lodash');
 const User = require('../models/User');
 const Posts = require('../models/Post');
-const { withAuth, getAuth, defined, wait, freePostWhitelist, toClientPost } = require('./utils');
+const { isAuth, defined, wait, freePostWhitelist, toClientPost } = require('./utils');
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router.get('/:_id', async (req, res) => {
     }
 });
 
-router.delete('/:_id', withAuth, async (req, res) => {
+router.delete('/:_id', isAuth, async (req, res) => {
     try {
         const { _id } = req.params;
         const posts = await Posts.find({ _id, active: true });
@@ -54,7 +54,7 @@ router.delete('/:_id', withAuth, async (req, res) => {
     }
 });
 
-router.get('/', getAuth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const {
             skip = 0,
@@ -90,7 +90,7 @@ router.get('/', getAuth, async (req, res) => {
     }
 });
 
-router.put('/:_id/like', withAuth, async (req, res) => {
+router.put('/:_id/like', isAuth, async (req, res) => {
     try {
         const { _id } = req.params;
         const post = await Posts.findOne({ _id, active: true });
@@ -117,7 +117,7 @@ router.put('/:_id/like', withAuth, async (req, res) => {
     }
 });
 
-router.put('/', withAuth, async (req, res) => {
+router.put('/', async (req, res) => {
     try {
         const {
             _id = null,

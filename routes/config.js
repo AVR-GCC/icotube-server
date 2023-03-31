@@ -5,15 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        console.log('req.session', req.session);
-        if (req.session.count) {
-            req.session.count++;
-        } else {
-            req.session.count = 1;
-        }
-        res.send({
-            freePostWhitelist
-        });
+        res.send({ success: true });
     } catch (err) {
         console.log('get errorr!!', err);
         res.send({
