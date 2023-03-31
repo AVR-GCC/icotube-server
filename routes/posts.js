@@ -34,7 +34,7 @@ router.delete('/:_id', isAuth, async (req, res) => {
     try {
         const { _id } = req.params;
         const posts = await Posts.find({ _id, active: true });
-        const canEdit = posts.length && (posts[0].email === req.email || freePostWhitelist.includes(req.email));
+        const canEdit = posts.length && (posts[0].email === req.user.email || freePostWhitelist.includes(req.user.email));
         if (canEdit) {
             posts[0].active = false;
             await posts[0].save();
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
 
         let userId;
         if (req.email) {
-            const user = await User.findOne({ email: req.email });
+            const user = await User.findOne({ email: req.user.email });
             userId = user._id;
         }
 
@@ -94,7 +94,7 @@ router.put('/:_id/like', isAuth, async (req, res) => {
     try {
         const { _id } = req.params;
         const post = await Posts.findOne({ _id, active: true });
-        const user = await User.findOne({ email: req.email });
+        const user = await User.findOne({ email: req.user.email });
         let likes = [...post.likes];
         const userIndex = findIndex(likes, e => e + '' === user._id + '');
         const currentlyLikes = userIndex === -1;
@@ -155,7 +155,7 @@ router.put('/', async (req, res) => {
             videoUrl = ''
         } = { ...req.body };
         let post;
-        if (_id && (req.email === email || freePostWhitelist.includes(req.email))) {
+        if (_id && (req.user.email === email || freePostWhitelist.includes(req.user.email))) {
             post = await Posts.findById(_id);
             if (post.email !== email) {
                 post = new Posts();
@@ -163,7 +163,7 @@ router.put('/', async (req, res) => {
         } else {
             post = new Posts();
         }
-        const autoPublish = freePostWhitelist.includes(req.email);
+        const autoPublish = freePostWhitelist.includes(req.user.email);
         post.active = post.active || autoPublish;
         post.paymentHooks = post.paymentHooks || [];
         post.email = email || post.email;
