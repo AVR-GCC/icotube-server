@@ -6,12 +6,15 @@ const { toClientUser, wait, isAuth } = require('./utils');
 
 const router = express.Router();
 
-const localSignup = async (req, res) => {
+const localSignup = async (req, res, next) => {
     try {
         let { email, password } = req.body;
         const { salt, hash } = generatePassword(password);
-        let user = await new User({ email, hash, salt }).save();
-        res.send({ success: true, user: toClientUser(user) });
+        await new User({ email, hash, salt }).save();
+        passport.authenticate('local', {
+            failureRedirect: '/login-failure',
+            successRedirect: 'login-success'
+        })(req, res, next);
     } catch (err) {
         console.log('signup error:', err);
         res.send({
