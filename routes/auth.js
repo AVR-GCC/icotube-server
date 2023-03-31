@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/User');
 const { generatePassword } = require('../utils/auth');
-const { toClientUser, wait } = require('./utils');
+const { toClientUser, wait, isAuth } = require('./utils');
 
 const router = express.Router();
 
@@ -42,11 +42,7 @@ const localLogin = passport.authenticate('local', {
 
 const logout = async (req, res) => {
     try {
-        console.log('req.logout', req.logout);
         req.logout();
-        console.log('logged out!');
-        await wait(5000);
-        console.log('finished waiting');
         res.redirect(process.env.CLIENT_URL);
     } catch (err) {
         console.log('logout error:', err);
@@ -57,7 +53,7 @@ const logout = async (req, res) => {
     }
 };
 
-router.get('/login/success', async (req, res) => {
+const loginSuccess = async (req, res) => {
     if (req.user) {
         res.status(200).json({
             success: true,
@@ -70,11 +66,13 @@ router.get('/login/success', async (req, res) => {
             message: 'No user connected'
         });
     }
-});
+};
+
+router.get('/login/success', isAuth, loginSuccess);
 
 router.post('/signup', localSignup);
 router.post('/login', localLogin);
-router.get('/logout', logout);
+router.get('/logout', isAuth, logout);
 
 module.exports = router;
 
