@@ -47,7 +47,6 @@ const logout = async (req, res) => {
     try {
         req.session.destroy();
         req.logout();
-        // res.redirect(process.env.CLIENT_URL);
         res.status(200).json({ success: true });
     } catch (err) {
         console.log('logout error:', err);
