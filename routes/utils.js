@@ -3,7 +3,10 @@ const { omit } = require("lodash");
 const freePostWhitelist = process.env.FREE_POST_WHITELIST.split(';');
 
 const toClientUser = (user) => {
-    return omit(user, ['hash', 'salt']);
+    console.log('user', user);
+    const clientUser = omit(user, ['hash', 'salt']);
+    console.log('clientUser', clientUser);
+    return clientUser;
 }
 
 const toClientPost = (post, userId) => {
