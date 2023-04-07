@@ -29,6 +29,7 @@ const localSignup = async (req, res, next) => {
 router.get('/login-success', (req, res, next) => {
     res.send({
         success: true,
+        user: toClientUser(req.user),
         message: 'logged in successfully'
     });
 });
