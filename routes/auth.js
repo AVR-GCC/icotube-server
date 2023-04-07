@@ -6,15 +6,17 @@ const { toClientUser, wait, isAuth } = require('./utils');
 
 const router = express.Router();
 
+const localPassportLogin = passport.authenticate('local', {
+    failureRedirect: '/login-failure',
+    successRedirect: 'login-success'
+});
+
 const localSignup = async (req, res, next) => {
     try {
         let { email, password } = req.body;
         const { salt, hash } = generatePassword(password);
         await new User({ email, hash, salt }).save();
-        passport.authenticate('local', {
-            failureRedirect: '/login-failure',
-            successRedirect: 'login-success'
-        })(req, res, next);
+        localPassportLogin(req, res, next);
     } catch (err) {
         console.log('signup error:', err);
         res.send({
@@ -36,11 +38,6 @@ router.get('/login-failure', (req, res, next) => {
         success: false,
         message: 'failed to login'
     });
-});
-
-const localLogin = passport.authenticate('local', {
-    failureRedirect: '/login-failure',
-    successRedirect: 'login-success'
 });
 
 const logout = async (req, res) => {
@@ -75,7 +72,7 @@ const loginSuccess = async (req, res) => {
 router.get('/login/success', loginSuccess);
 
 router.post('/signup', localSignup);
-router.post('/login', localLogin);
+router.post('/login', localPassportLogin);
 router.get('/logout', logout);
 
 module.exports = router;
