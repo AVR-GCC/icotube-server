@@ -1,14 +1,25 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 const User = require('../models/User');
+
 const { checkPassword } = require('../utils/auth');
-// const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const customFields = {
+
+const localOptions = {
   usernameField: 'email',
   passwordField: 'password'
 };
 
-const verifyCallback = (username, password, done) => {
+const googleOptions = {
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: '/auth/google/callback',
+  scope: ['profile', 'email'],
+  state: true
+}
+
+const localCallback = (username, password, done) => {
   User.findOne({ email: username })
       .then((user) => {
           if (!user) { return done(null, false) }
@@ -24,42 +35,36 @@ const verifyCallback = (username, password, done) => {
       .catch((err) => {   
           done(err);
       });
+};
 
+const googleCallback = (accessToken, refreshToken, profile, done) => {
+  const emails = profile.emails.map(email => email.value) || [null];
+  const imageUrl = (profile?.photos || [null])[0]?.value;
+  User.findOne({ email: { $in: emails } }).then(potentialUser => {
+    let user = potentialUser;
+    if (!user) {
+      user = new User({
+        email: emails[0],
+        imageUrl
+      });
+    } else if (!user.imageUrl) {
+      user.imageUrl = imageUrl;
+    }
+    user.save().then(() => {
+      return done(null, user);
+    }).catch(e => {
+      return done(e);
+    });
+  }).catch(e => {
+    return done(e);
+  });
 }
 
-const localStrategy = new LocalStrategy(customFields, verifyCallback);
+const localStrategy = new LocalStrategy(localOptions, localCallback);
+const googleStrategy = new GoogleStrategy(googleOptions, googleCallback);
 
 passport.use(localStrategy);
-
-// passport.use(new GoogleStrategy({
-//     clientID: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     callbackURL: '/auth/google/callback',
-//     scope: [ 'profile', 'email' ],
-//     state: true
-//   },
-//   function(accessToken, refreshToken, profile, done) {
-//     console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-');
-//     console.log('passport.use cb');
-//     const emails = profile.emails.map(email => email.value) || [null];
-//     const imageUrl = (profile?.photos || [null])[0]?.value;
-//     User.findOne({ email: { $in: emails } }).then(potentialUser => {
-//       let user = potentialUser;
-//       if (!user) {
-//         user = new User({
-//           email: emails[0],
-//           imageUrl
-//         });
-//       } else if (!user.imageUrl) {
-//         user.imageUrl = imageUrl;
-//       }
-//       user.save().then(() => {
-//         console.log('passport.use cb user', user);
-//         return done(null, user);
-//       })
-//     });
-//   }
-// ));
+passport.use(googleStrategy);
 
 passport.serializeUser((user, done) => {
   done(null, user._id.toString());
