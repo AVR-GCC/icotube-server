@@ -7,8 +7,8 @@ const { toClientUser, wait, isAuth } = require('./utils');
 const router = express.Router();
 
 const localPassportLogin = passport.authenticate('local', {
-    failureRedirect: '/login-failure',
-    successRedirect: 'login-success'
+    failureRedirect: '/auth/login-failure',
+    successRedirect: '/auth/login-success'
 });
 
 const localSignup = async (req, res, next) => {
@@ -25,6 +25,13 @@ const localSignup = async (req, res, next) => {
         });
     }
 };
+
+const googlePassportLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
+
+const googlePassportLoginCallback = passport.authenticate('google', {
+    successRedirect: process.env.CLIENT_URL,
+    failureRedirect: '/login-failure'
+});
 
 router.get('/login-success', (req, res, next) => {
     res.send({
@@ -70,6 +77,9 @@ const loginSuccess = async (req, res) => {
     }
 };
 
+router.get('/google', googlePassportLogin);
+router.get('/google/callback', googlePassportLoginCallback);
+
 router.get('/login/success', loginSuccess);
 
 router.post('/signup', localSignup);
@@ -77,24 +87,3 @@ router.post('/login', localPassportLogin);
 router.get('/logout', logout);
 
 module.exports = router;
-
-
-// router.get('/get-me', withAuth, getMe)
-
-// router.get('/login/failed', (req, res) => {
-//     res.status(401).json({
-//         success: false,
-//         message: 'failed!'
-//     });
-// });
-
-// router.get('/google', (req, res, next) => {
-//     passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
-// });
-
-// router.get('/google/callback', (req, res, next) => {
-//     passport.authenticate('google', {
-//         successRedirect: process.env.CLIENT_URL,
-//         failureRedirect: '/login/failed'
-//     })(req, res, next);
-// });
