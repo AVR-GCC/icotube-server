@@ -38,6 +38,14 @@ mongoose.set('strictQuery', false);
 
 mongoose.connect(dbLink).then(() => console.log('Connected to DB!: ', dbLink));
 
+// ------------ parsing ------------
+
+const cookieSecret = process.env.COOKIE_SECRET;
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser(cookieSecret));
+
 // ------------ cors ------------
 
 const corsConfig = {
@@ -47,13 +55,6 @@ const corsConfig = {
 
 app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
-
-// ------------ parsing ------------
-
-const cookieSecret = process.env.COOKIE_SECRET;
-
-app.use(bodyParser.json());
-app.use(cookieParser(cookieSecret));
 
 // ------------ session ------------
 
