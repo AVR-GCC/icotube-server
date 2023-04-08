@@ -1,7 +1,7 @@
 {
   "name": "proxy-server",
   "version": "1.0.0",
-  "description": "a proxy server for duckduckgo",
+  "description": "Server for icotube co",
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
@@ -9,15 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://BarYeh@bitbucket.org/BarYeh/duckduckgoproxy.git"
+    "url": "git+https://github.com/AVR-GCC/icotube-server.git"
   },
-  "keywords": [
-    "duck",
-    "go"
-  ],
+  "keywords": ["ico", "icotube", "crypto", "token", "blockchain"],
   "author": "Bar Yehudai",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/BarYeh/duckduckgoproxy#readme",
+  "homepage": "https://www.icotube.co/",
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.2",
@@ -28,12 +25,11 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.3",
-    "google-auth-library": "^8.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.2.3",
     "morgan": "^1.10.0",
     "passport": "^0.5.2",
-    "passport-google-oauth": "^2.0.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7"
   },
