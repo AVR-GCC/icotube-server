@@ -28,6 +28,11 @@ const localSignup = async (req, res, next) => {
 
 const googlePassportLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
 
+const googlePassportLoginCallback = passport.authenticate('google', {
+    successRedirect: `${process.env.CLIENT_URL}`,
+    failureRedirect: '/login-failure'
+});
+
 router.get('/login-success', (req, res, next) => {
     res.send({
         success: true,
@@ -73,11 +78,7 @@ const loginSuccess = async (req, res) => {
 };
 
 router.get('/google', googlePassportLogin);
-router.get('/google/callback', passport.authenticate('google', {
-    failureRedirect: '/login-failure'
-}), (req, res) => {
-    res.redirect(`${process.env.CLIENT_URL}?sessionId=${req.sessionID}`);
-});
+router.get('/google/callback', googlePassportLoginCallback);
 
 router.get('/login/success', loginSuccess);
 

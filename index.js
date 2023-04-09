@@ -49,7 +49,7 @@ app.use(cookieParser(cookieSecret));
 // ------------ cors ------------
 
 const corsConfig = {
-    origin: true,
+    origin: process.env.CLIENT_URL,
     credentials: true,
 };
 
