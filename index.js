@@ -76,7 +76,7 @@ const sessionMiddleware = session({
     resave: false,
     store: sessionStore,
     cookie: {
-        sameSite: 'lax',
+        sameSite: 'none',
         maxAge: oneDay,
         path: "/",
         secure: process.env.NODE_ENV === 'prod',
