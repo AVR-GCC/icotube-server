@@ -50,19 +50,6 @@ app.use(cookieParser(cookieSecret));
 
 app.set('trust proxy', 1);
 
-// if(process.env.NODE_ENV === 'prod') {
-//     app.use((req, res, next) => {
-//         const bothParts = req.rawHeaders[11].split(':');
-//         const proto = bothParts[0];
-//         if (proto !== 'https') {
-//             console.log('redirecting to:', `https:${bothParts[1]}`);
-//             res.redirect(`https:${bothParts[1]}`);
-//         } else {
-//             next();
-//         }
-//     })
-// }
-
 app.use(sslRedirect.default());
 
 // ------------ cors ------------
@@ -147,5 +134,5 @@ app.use('/auth', authRouter);
 app.use('/alert', alertRouter);
 
 app.listen(port, () => {
-    console.log(`ICOTube listening at http://localhost:${port}`)
+    console.log(`ICOTube listening at ${process.env.NODE_ENV === 'dev' ? 'http://localhost' : 'https://server.icotube.co'}:${port}`)
 });
