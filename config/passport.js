@@ -39,7 +39,9 @@ const localCallback = (username, password, done) => {
 
 const googleCallback = (accessToken, refreshToken, profile, done) => {
   const emails = profile.emails.map(email => email.value) || [null];
+  console.log('got emails', emails);
   const imageUrl = (profile?.photos || [null])[0]?.value;
+  console.log('imageUrl', imageUrl);
   User.findOne({ email: { $in: emails } }).then(potentialUser => {
     let user = potentialUser;
     if (!user) {
@@ -51,11 +53,14 @@ const googleCallback = (accessToken, refreshToken, profile, done) => {
       user.imageUrl = imageUrl;
     }
     user.save().then(() => {
+      console.log('Google CB Success');
       return done(null, user);
     }).catch(e => {
+      console.log('ERROR SAVING', e.message);
       return done(e);
     });
   }).catch(e => {
+    console.log('ERROR FINDING', e.message);
     return done(e);
   });
 }
