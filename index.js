@@ -48,6 +48,8 @@ app.use(cookieParser(cookieSecret));
 
 // ------------ ssl redirect ------------
 
+app.set('trust proxy', 1);
+
 // app.use(sslRedirect.default());
 
 if(process.env.NODE_ENV === 'prod') {
@@ -73,8 +75,6 @@ app.use(cors(corsConfig));
 app.options('*', cors(corsConfig));
 
 // ------------ session ------------
-
-app.set('trust proxy', 1);
 
 const sessionStore = MongoStore.create({
     mongoUrl: dbLink,
