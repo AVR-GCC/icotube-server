@@ -100,12 +100,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // test passport
-// app.use((req, _, next) => {
-//     console.log('-=-=-=-=-=-=-=-', req.url, '-=-=-=-=-=-=-=-');
-//     console.log('session:', req.sessionID, req.session);
-//     // console.log('user:', req.user);
-//     next();
-// });
+app.use((req, _, next) => {
+    console.log('-=-=-=-=-=-=-=-', req.url, '-=-=-=-=-=-=-=-');
+    console.log('session:', req.sessionID, req.session);
+    // console.log('user:', req.user);
+    next();
+});
 
 // ------------ log ------------
 
