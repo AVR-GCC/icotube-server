@@ -94,12 +94,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(sslRedirect.default());
 
-if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
-        if (req.header('x-forwarded-proto') !== 'https')
+        if (req.header('x-forwarded-proto') !== 'https') {
             res.redirect(`https://${req.header('host')}${req.url}`);
-        else
+        } else {
             next();
+        }
     })
 }
 
