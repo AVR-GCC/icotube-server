@@ -52,8 +52,7 @@ app.use(cookieParser(cookieSecret));
 
 if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
-        console.log("x-forwarded-proto", req.header('x-forwarded-proto'));
-        console.log("req.protocol", req.protocol);
+        console.log("secure??", req.secure);
         if (req.header('x-forwarded-proto') !== 'https') {
             console.log('redirecting to:', `https://${req.header('host')}${req.url}`);
             res.redirect(`https://${req.header('host')}${req.url}`);
