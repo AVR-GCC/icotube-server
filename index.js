@@ -53,10 +53,10 @@ app.set('trust proxy', 1);
 // app.use(sslRedirect.default());
 
 
-if(true) {
+if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
-        console.log("rawHeaders", req.rawHeaders);
-        if (req.header('x-forwarded-proto') !== 'https') {
+        const proto = req.rawHeaders[11].split(':')[0];
+        if (proto !== 'https') {
             console.log('redirecting to:', `https://${req.header('host')}${req.url}`);
             res.redirect(`https://${req.header('host')}${req.url}`);
         } else {
