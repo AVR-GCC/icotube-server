@@ -72,7 +72,7 @@ const sessionStore = MongoStore.create({
 const sessionMiddleware = session({
     name: 'session',
     secret: cookieSecret,
-    saveUninitialized: false,
+    saveUninitialized: true,
     resave: false,
     store: sessionStore,
     cookie: {
