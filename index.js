@@ -23,7 +23,7 @@ const { isAuth, oneDay } = require('./routes/utils');
 
 const path = require('path');
 
-// const sslRedirect = require('heroku-ssl-redirect');
+const sslRedirect = require('heroku-ssl-redirect');
 const passport = require('passport');
 require('./config/passport.js');
 
@@ -50,21 +50,20 @@ app.use(cookieParser(cookieSecret));
 
 app.set('trust proxy', 1);
 
-// app.use(sslRedirect.default());
+// if(process.env.NODE_ENV === 'prod') {
+//     app.use((req, res, next) => {
+//         const bothParts = req.rawHeaders[11].split(':');
+//         const proto = bothParts[0];
+//         if (proto !== 'https') {
+//             console.log('redirecting to:', `https:${bothParts[1]}`);
+//             res.redirect(`https:${bothParts[1]}`);
+//         } else {
+//             next();
+//         }
+//     })
+// }
 
-
-if(process.env.NODE_ENV === 'prod') {
-    app.use((req, res, next) => {
-        const bothParts = req.rawHeaders[11].split(':');
-        const proto = bothParts[0];
-        if (proto !== 'https') {
-            console.log('redirecting to:', `https:${bothParts[1]}`);
-            res.redirect(`https:${bothParts[1]}`);
-        } else {
-            next();
-        }
-    })
-}
+app.use(sslRedirect.default());
 
 // ------------ cors ------------
 
