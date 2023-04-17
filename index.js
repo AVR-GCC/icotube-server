@@ -55,10 +55,11 @@ app.set('trust proxy', 1);
 
 if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
-        const proto = req.rawHeaders[11].split(':')[0];
+        const bothParts = req.rawHeaders[11].split(':');
+        const proto = bothParts[0];
         if (proto !== 'https') {
-            console.log('redirecting to:', `https://${req.header('host')}${req.url}`);
-            res.redirect(`https://${req.header('host')}${req.url}`);
+            console.log('redirecting to:', `https:${bothParts[1]}`);
+            res.redirect(`https:${bothParts[1]}`);
         } else {
             next();
         }
