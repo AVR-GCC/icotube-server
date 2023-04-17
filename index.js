@@ -23,7 +23,7 @@ const { isAuth, oneDay } = require('./routes/utils');
 
 const path = require('path');
 
-// const sslRedirect = require('heroku-ssl-redirect');
+const sslRedirect = require('heroku-ssl-redirect');
 const passport = require('passport');
 require('./config/passport.js');
 
@@ -90,6 +90,19 @@ app.use(sessionMiddleware);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ------------ ssl redirect ------------
+
+app.use(sslRedirect.default());
+
+if(process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.header('x-forwarded-proto') !== 'https')
+            res.redirect(`https://${req.header('host')}${req.url}`);
+        else
+            next();
+    })
+}
+
 // ------------ passport ------------
 
 app.use(passport.initialize());
@@ -132,13 +145,3 @@ app.use('/alert', alertRouter);
 app.listen(port, () => {
     console.log(`ICOTube listening at http://localhost:${port}`)
 });
-
-// app.use(sslRedirect.default());
-// if(process.env.NODE_ENV === 'production') {
-//     app.use((req, res, next) => {
-//         if (req.header('x-forwarded-proto') !== 'https')
-//             res.redirect(`https://${req.header('host')}${req.url}`);
-//         else
-//             next();
-//     })
-// }
