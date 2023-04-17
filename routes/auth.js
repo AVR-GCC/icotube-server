@@ -28,10 +28,32 @@ const localSignup = async (req, res, next) => {
 
 const googlePassportLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
 
-const googlePassportLoginCallback = passport.authenticate('google', {
+const googlePassportLoginCallback = function(req, res, next) {
+    passport.authenticate('google', function(err, user, info) {
+        if (err) {
+        console.error('Error:', err);
+        return res.status(500).send('An error occurred during authentication');
+        }
+        
+        if (!user) {
+        console.error('Authentication failed:', info);
+        return res.status(401).send('Authentication failed');
+        }
+
+        // Log the user in if authentication is successful
+        req.logIn(user, function(err) {
+        if (err) {
+            console.error('Error logging in:', err);
+            return res.status(500).send('An error occurred while logging in');
+        }
+        return res.redirect(process.env.CLIENT_URL); // Replace this with your success route
+        });
+    })(req, res, next);
+}
+/*passport.authenticate('google', {
     successRedirect: `${process.env.CLIENT_URL}`,
     failureRedirect: '/login-failure'
-});
+});*/
 
 router.get('/login-success', (req, res, next) => {
     res.send({
