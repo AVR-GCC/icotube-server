@@ -96,7 +96,9 @@ app.use(sslRedirect.default());
 
 if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
+        console.log("req.header('x-forwarded-proto')", req.header('x-forwarded-proto'));
         if (req.header('x-forwarded-proto') !== 'https') {
+            console.log('redirecting to:', `https://${req.header('host')}${req.url}`);
             res.redirect(`https://${req.header('host')}${req.url}`);
         } else {
             next();
