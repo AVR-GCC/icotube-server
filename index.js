@@ -23,7 +23,7 @@ const { isAuth, oneDay } = require('./routes/utils');
 
 const path = require('path');
 
-const sslRedirect = require('heroku-ssl-redirect');
+// const sslRedirect = require('heroku-ssl-redirect');
 const passport = require('passport');
 require('./config/passport.js');
 
@@ -92,7 +92,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ------------ ssl redirect ------------
 
-app.use(sslRedirect.default());
+// app.use(sslRedirect.default());
 
 if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
