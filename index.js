@@ -96,7 +96,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 if(process.env.NODE_ENV === 'prod') {
     app.use((req, res, next) => {
-        console.log("req.header('x-forwarded-proto')", req.header('x-forwarded-proto'));
+        console.log("x-forwarded-proto", req.header('x-forwarded-proto'));
+        console.log("x-forwarded-protocol", req.header('x-forwarded-protocol'));
+        console.log("x-url-scheme", req.header('x-url-scheme'));
+        console.log("x-forwarded-ssl", req.header('x-forwarded-ssl'));
         if (req.header('x-forwarded-proto') !== 'https') {
             console.log('redirecting to:', `https://${req.header('host')}${req.url}`);
             res.redirect(`https://${req.header('host')}${req.url}`);
