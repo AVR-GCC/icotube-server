@@ -55,6 +55,12 @@ const googlePassportLoginCallback = passport.authenticate('google', {
     failureRedirect: '/login-failure'
 });
 
+const linkedInPassportLogin = passport.authenticate('linkedin');
+const linkedInPassportLoginCallback = passport.authenticate('linkedin', {
+    successRedirect: `${process.env.CLIENT_URL}`,
+    failureRedirect: '/login-failure'
+});
+
 router.get('/login-success', (req, res, next) => {
     res.send({
         success: true,
@@ -101,6 +107,9 @@ const loginSuccess = async (req, res) => {
 
 router.get('/google', googlePassportLogin);
 router.get('/google/callback', googlePassportLoginCallback);
+
+router.get('/linkedin', linkedInPassportLogin);
+router.get('/linkedin/callback', linkedInPassportLoginCallback);
 
 router.get('/login/success', loginSuccess);
 
