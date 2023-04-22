@@ -4,6 +4,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
 const User = require('../models/User');
+const { emailConfirmationMessage } = require('../routes/utils');
 
 const { checkPassword } = require('../utils/auth');
 
@@ -28,20 +29,25 @@ const linkedInOptions = {
 }
 
 const localCallback = (username, password, done) => {
+  const failArg = { message: 'Wrong email or password' };
   User.findOne({ email: username })
       .then((user) => {
-          if (!user) { return done(null, false) }
+          if (!user) { return done(null, false, failArg) }
           
           const isValid = checkPassword(password, user.hash, user.salt);
           
           if (isValid) {
-              return done(null, user);
+              if (user.emailConfirmed) {
+                return done(null, user);
+              }
+              return done(null, false, { message: emailConfirmationMessage });
           } else {
-              return done(null, false);
+              return done(null, false, failArg);
           }
       })
       .catch((err) => {   
-          done(err);
+          console.log('Local login error:', err);
+          done(err, false, failArg);
       });
 };
 
@@ -53,6 +59,7 @@ const googleCallback = (accessToken, refreshToken, profile, done) => {
     if (!user) {
       user = new User({
         email: emails[0],
+        emailConfirmed: true,
         imageUrl
       });
     } else if (!user.imageUrl) {
@@ -76,6 +83,7 @@ const linkedInCallback = (accessToken, refreshToken, profile, done) => {
     if (!user) {
       user = new User({
         email: emails[0],
+        emailConfirmed: true,
         imageUrl
       });
     } else if (!user.imageUrl) {

@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const morgan = require('morgan');
+const flash = require('connect-flash');
 
 require('dotenv/config');
 const postsRouter = require('./routes/posts');
@@ -90,7 +91,11 @@ const sessionMiddleware = session({
 
 app.use(sessionMiddleware);
 
-// ------------ static ------------
+// ------------ flash ------------
+
+app.use(flash());
+
+// ------------ passport ------------
 
 app.use(express.static(path.join(__dirname, 'public')));
 

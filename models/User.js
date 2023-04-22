@@ -6,17 +6,19 @@ const UserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    hash: {
-        type: String,
-        required: false
-    },
-    salt: {
-        type: String,
-        required: false
-    },
+    hash: { type: String },
+    salt: { type: String },
     imageUrl: {
         type: String,
         required: false
+    },
+    token: {
+        type: String,
+        required: true
+    },
+    emailConfirmed: {
+        type: Boolean,
+        default: false
     }
 });
 

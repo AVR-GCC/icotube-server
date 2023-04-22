@@ -1,5 +1,7 @@
 const { omit } = require("lodash");
 
+const emailConfirmationMessage = 'Please check your email for confirmation link';
+
 const freePostWhitelist = process.env.FREE_POST_WHITELIST.split(';');
 
 const toClientUser = (user) => {
@@ -45,5 +47,6 @@ module.exports = {
     oneMinute,
     oneHour,
     oneDay,
-    freePostWhitelist
+    freePostWhitelist,
+    emailConfirmationMessage
 };
