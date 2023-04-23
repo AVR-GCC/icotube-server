@@ -13,8 +13,7 @@ const UserSchema = mongoose.Schema({
         required: false
     },
     token: {
-        type: String,
-        required: true
+        type: String
     },
     emailConfirmed: {
         type: Boolean,
