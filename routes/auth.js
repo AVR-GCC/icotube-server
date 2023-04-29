@@ -3,7 +3,7 @@ const passport = require('passport');
 const crypto = require('crypto');
 const User = require('../models/User');
 const { generatePassword } = require('../utils/auth');
-const { sendConfirmationEmail } = require('../utils/email');
+const { sendConfirmationEmail, sendResetPasswordEmail } = require('../utils/email');
 const { toClientUser, wait, isAuth, emailConfirmationMessage } = require('./utils');
 
 const router = express.Router();
@@ -14,6 +14,29 @@ const localPassportLogin = passport.authenticate('local', {
     failureFlash: true
 });
 
+const resetPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.send({ success: false, error: { message: 'Email not found, please sign up' } });
+        }
+        const password = crypto.randomBytes(3).toString('hex');
+        const { salt, hash } = generatePassword(password);
+        user.salt = salt;
+        user.hash = hash;
+        await user.save();
+        sendResetPasswordEmail(password, email);
+        res.send({ success: true });
+    } catch (err) {
+        console.log('reset error:', err);
+        res.send({
+            success: false,
+            error: err.message ? err : { message: err }
+        });
+    }
+};
+
 const localSignup = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -23,7 +46,7 @@ const localSignup = async (req, res) => {
         sendConfirmationEmail(token, email);
         res.send({ success: true });
     } catch (err) {
-        console.log('signup error:', err);
+        console.log('local signup error:', err);
         res.send({
             success: false,
             error: err.message ? err : { message: err }
@@ -49,10 +72,9 @@ const confirmEmail = async (req, res) => {
 }
 
 const resendConfirmationEmail = async (req, res) => {
-    const { email } = req.query;
+    const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user || user.emailConfirmed) return res.send({ success: false });
-    console.log('user', user);
     sendConfirmationEmail(user.token, email);
     res.send({ success: true });
 }
@@ -122,11 +144,13 @@ router.get('/google/callback', googlePassportLoginCallback);
 router.get('/linkedin', linkedInPassportLogin);
 router.get('/linkedin/callback', linkedInPassportLoginCallback);
 
+router.put('/reset-password', resetPassword);
+
 router.get('/login/success', loginSuccess);
 
 router.post('/signup', localSignup);
 router.get('/confirm', confirmEmail);
-router.get('/resend-confirmation', resendConfirmationEmail);
+router.put('/resend-confirmation', resendConfirmationEmail);
 
 router.post('/login', localPassportLogin);
 router.get('/logout', logout);
