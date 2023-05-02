@@ -37,6 +37,34 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) => {
+    try {
+        const { email, oldPassword, newPassword } = req.body;
+        if (email !== req.user?.email) {
+            return res.send({ success: false, error: { message: 'Please log in' } });
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.send({ success: false, error: { message: 'Email not found, please sign up' } });
+        }
+        if (!user.salt || !user.hash || checkPassword(oldPassword, user.salt, user.hash)) {
+            const { salt, hash } = generatePassword(newPassword);
+            user.salt = salt;
+            user.hash = hash;
+            await user.save();
+            return res.send({ success: true });
+        }
+        res.send({ success: false, error: { message: 'Password incorrect' } });
+    } catch (err) {
+        console.log('change password error:', err);
+        res.send({
+            success: false,
+            error: err.message ? err : { message: err }
+        });
+    }
+};
+
+
 const localSignup = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -145,6 +173,7 @@ router.get('/linkedin', linkedInPassportLogin);
 router.get('/linkedin/callback', linkedInPassportLoginCallback);
 
 router.put('/reset-password', resetPassword);
+router.put('/change-avatar', changeAvatar)
 
 router.get('/login/success', loginSuccess);
 
