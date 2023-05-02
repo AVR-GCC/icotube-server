@@ -99,6 +99,14 @@ const confirmEmail = async (req, res) => {
     })
 }
 
+const changeAvatar = async (req, res) => {
+    const { avatarUrl } = req.body;
+    req.user.imageUrl = avatarUrl;
+    req.user.save((err) => {
+        if (err) console.log('change avatar error', err);
+        res.send({ success: !err, error: err });
+    });
+}
 const resendConfirmationEmail = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -173,6 +181,7 @@ router.get('/linkedin', linkedInPassportLogin);
 router.get('/linkedin/callback', linkedInPassportLoginCallback);
 
 router.put('/reset-password', resetPassword);
+router.put('/change-password', changePassword);
 router.put('/change-avatar', changeAvatar)
 
 router.get('/login/success', loginSuccess);
