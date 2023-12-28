@@ -19,6 +19,7 @@ const paymentsRouter = require('./routes/payments');
 const configRouter = require('./routes/config');
 const authRouter = require('./routes/auth');
 const alertRouter = require('./routes/alert');
+const contractsRouter = require('./routes/contracts');
 
 const { isAuth, oneDay } = require('./routes/utils');
 
@@ -137,6 +138,7 @@ app.use('/posts', postsRouter);
 app.use('/payment', paymentsRouter);
 app.use('/auth', authRouter);
 app.use('/alert', alertRouter);
+app.use('/contracts', contractsRouter);
 
 app.listen(port, () => {
     console.log(`ICOTube listening at ${process.env.NODE_ENV === 'dev' ? 'http://localhost' : 'https://server.icotube.co'}:${port}`)
