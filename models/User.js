@@ -1,5 +1,29 @@
 const mongoose = require('mongoose');
 
+const contractSchema = new mongoose.Schema({
+    address: {
+        type: String,
+        required: true
+    },
+    name: {
+        type: String,
+        required: false
+    },
+    type: {
+        type: String,
+        required: true,
+        enum: ['standard', 'user-paid']
+    },
+    tokenAddress: {
+        type: String,
+        required: true
+    },
+    deployedAt: {
+        type: Date,
+        required: true
+    }
+});
+
 const UserSchema = mongoose.Schema({
     email: {
         type: String,
@@ -18,7 +42,8 @@ const UserSchema = mongoose.Schema({
     emailConfirmed: {
         type: Boolean,
         default: false
-    }
+    },
+    contracts: [contractSchema]
 });
 
 module.exports = mongoose.model('User', UserSchema);

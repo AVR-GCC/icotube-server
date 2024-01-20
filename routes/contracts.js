@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
 const router = express.Router();
+const User = require('../models/User');
 
 function findImport(importPath) {
     try {
@@ -14,6 +15,36 @@ function findImport(importPath) {
         return { error: 'File not found' };
     }
 }
+
+router.put('/airdrop', async (req, res) => {
+    try {
+        const airdropAddress = get(req, 'body.airdropAddress', '0x0');
+        const airdropName = get(req, 'body.airdropName', 'MyAirdrop');
+        const tokenAddress = get(req, 'body.tokenAddress', '0x0');
+
+        const user = await User.findOne({ email: req.user?.email });
+        if (!user) {
+            return res.json({ success: false, error: { message: 'Please log in' } });
+        }
+        const contract = user.contracts.find(contract => contract.address === airdropAddress);
+        if (contract) {
+            return res.json({ success: false, error: { message: 'Contract already stored' } });
+        }
+        const newContract = {
+            address: airdropAddress,
+            name: airdropName,
+            type: 'standard',
+            tokenAddress,
+            deployedAt: new Date()
+        };
+        const newContracts = [...user.contracts, newContract];
+        user.contracts = newContracts;
+        await user.save();
+        res.json({ success: true, contracts: newContracts });
+    } catch (err) {
+        res.json({ success: false, error: err });
+    }
+});
 
 router.post('/airdrop', async (req, res) => {
     try {
