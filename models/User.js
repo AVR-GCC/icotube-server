@@ -12,11 +12,10 @@ const contractSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ['standard', 'user-paid']
+        enum: ['standard', 'user-paid', 'token']
     },
     tokenAddress: {
-        type: String,
-        required: true
+        type: String
     },
     deployedAt: {
         type: Date,
