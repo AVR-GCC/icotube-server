@@ -142,6 +142,7 @@ router.post('/token', async (req, res) => {
     try {
         const name = get(req, 'body.name', 'MyToken');
         const symbol = get(req, 'body.symbol', 'MTK');
+        const amount = get(req, 'body.amount', '1000');
         const myTokenSource = `
         // SPDX-License-Identifier: MIT
         pragma solidity ^0.8.0;
@@ -150,7 +151,7 @@ router.post('/token', async (req, res) => {
 
         contract ${name} is ERC20 {
             constructor() ERC20("${name}", "${symbol}") {
-                _mint(msg.sender, 1000 * (10 ** uint256(decimals())));
+                _mint(msg.sender, ${amount} * (10 ** uint256(decimals())));
             }
         }`;
 
