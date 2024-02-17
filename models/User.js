@@ -5,6 +5,10 @@ const contractSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    network: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: false

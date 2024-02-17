@@ -18,20 +18,22 @@ function findImport(importPath) {
 
 router.put('/airdrop', async (req, res) => {
     try {
-        const airdropAddress = get(req, 'body.airdropAddress', '0x0');
+        const address = get(req, 'body.airdropAddress', '0x0');
         const airdropName = get(req, 'body.airdropName', 'MyAirdrop');
         const tokenAddress = get(req, 'body.tokenAddress', '0x0');
+        const network = get(req, 'body.network', '1');
 
         const user = await User.findOne({ email: req.user?.email });
         if (!user) {
             return res.json({ success: false, error: { message: 'Please log in' } });
         }
-        const contract = user.contracts.find(contract => contract.address === airdropAddress);
+        const contract = user.contracts.find(contract => contract.address === address);
         if (contract) {
             return res.json({ success: false, error: { message: 'Contract already stored' } });
         }
         const newContract = {
-            address: airdropAddress,
+            address,
+            network,
             name: airdropName,
             type: 'standard',
             tokenAddress,
@@ -143,6 +145,7 @@ router.put('/token', async (req, res) => {
         const address = get(req, 'body.address', '0x0');
         const name = get(req, 'body.name', 'MyToken');
         const symbol = get(req, 'body.symbol', 'MTK');
+        const network = get(req, 'body.network', '1');
 
         const user = await User.findOne({ email: req.user?.email });
         if (!user) {
@@ -153,7 +156,8 @@ router.put('/token', async (req, res) => {
             return res.json({ success: false, error: { message: 'Contract already stored' } });
         }
         const newContract = {
-            address: address,
+            address,
+            network,
             name: `${name} (${symbol})`,
             type: 'token',
             tokenAddress: null,
