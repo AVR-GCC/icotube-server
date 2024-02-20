@@ -117,10 +117,13 @@ const resendConfirmationEmail = async (req, res) => {
 
 const googlePassportLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
 
-const googlePassportLoginCallback = passport.authenticate('google', {
-    successRedirect: `${process.env.CLIENT_URL}`,
-    failureRedirect: '/login-failure'
-});
+const googlePassportLoginCallback = (...args) => {
+    console.log('callback args:', args);
+    return passport.authenticate('google', {
+        successRedirect: `${process.env.CLIENT_URL}`,
+        failureRedirect: '/login-failure'
+    })(...args)
+};
 
 const linkedInPassportLogin = passport.authenticate('linkedin');
 const linkedInPassportLoginCallback = passport.authenticate('linkedin', {
