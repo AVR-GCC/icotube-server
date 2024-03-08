@@ -1,5 +1,5 @@
 const express = require('express');
-const { get } = require('lodash');
+const { get, findIndex, splice } = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const solc = require('solc');
@@ -208,6 +208,25 @@ router.post('/token', async (req, res) => {
         }
 
         res.json({ success: true, output, warning });
+    } catch (err) {
+        res.json({ success: false, error: err });
+    }
+});
+
+router.delete('/:address', async (req, res) => {
+    try {
+        const { address } = req.params;
+        const user = await User.findOne({ email: req.user?.email });
+        if (!user) {
+            return res.json({ success: false, error: { message: 'Please log in' } });
+        }
+        const contractIndex = findIndex(user.contracts, contract => contract.address === address);
+        if (contractIndex === -1) {
+            return res.json({ success: false, error: { message: 'Contract not found' } });
+        }
+        user.contracts.splice(contractIndex, 1);
+        await user.save();
+        res.json({ success: true, contracts: user.contracts });
     } catch (err) {
         res.json({ success: false, error: err });
     }
