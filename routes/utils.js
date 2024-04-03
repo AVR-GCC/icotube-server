@@ -32,6 +32,14 @@ const isAuth = (req, res, next) => {
     }
 }
 
+const isAdmin = (req, res, next) => {
+    if (req.isAuthenticated() && freePostWhitelist.includes(req.user.email)) {
+        next();
+    } else {
+        res.status(401).json({ msg: 'Unauthorized' });
+    }
+}
+
 const oneMinute = 60 * 1000;
 
 const oneHour = 60 * oneMinute;
@@ -43,6 +51,7 @@ module.exports = {
     defined,
     wait,
     isAuth,
+    isAdmin,
     toClientUser,
     oneMinute,
     oneHour,
