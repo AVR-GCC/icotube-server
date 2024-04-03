@@ -23,6 +23,7 @@ const PostSchema = mongoose.Schema({
         required: true
     },
     title: String,
+    genre: String,
     type: String,
     tokenRole: String,
     importantNote: {

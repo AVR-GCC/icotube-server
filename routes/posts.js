@@ -152,7 +152,8 @@ router.put('/', async (req, res) => {
             bitcoinTalk = '',
             logo = '',
             homepage = '',
-            videoUrl = ''
+            videoUrl = '',
+            genre = ''
         } = { ...req.body };
         let post;
         const autoPublish = freePostWhitelist.includes(req.user.email);
@@ -198,6 +199,7 @@ router.put('/', async (req, res) => {
         post.videoUrl = videoUrl || post.videoUrl;
         post.coinExplorerLink = coinExplorerLink || post.coinExplorerLink;
         post.linkedinLink = linkedinLink || post.linkedinLink;
+        post.genre = genre || post.genre;
         // console.log('about to wait!');
         // await wait(10000);
         // console.log('finished waiting...');
