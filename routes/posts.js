@@ -155,7 +155,8 @@ router.put('/', async (req, res) => {
             videoUrl = ''
         } = { ...req.body };
         let post;
-        if (_id && (req.user.email === email || freePostWhitelist.includes(req.user.email))) {
+        const autoPublish = freePostWhitelist.includes(req.user.email);
+        if (_id && (req.user.email === email || autoPublish)) {
             post = await Posts.findById(_id);
             if (post.email !== email) {
                 post = new Posts();
@@ -163,7 +164,6 @@ router.put('/', async (req, res) => {
         } else {
             post = new Posts();
         }
-        const autoPublish = freePostWhitelist.includes(req.user.email);
         post.active = post.active || autoPublish;
         post.paymentHooks = post.paymentHooks || [];
         post.email = email || post.email;
