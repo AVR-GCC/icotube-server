@@ -2,7 +2,7 @@ const express = require('express');
 const { findIndex, filter } = require('lodash');
 const User = require('../models/User');
 const Posts = require('../models/Post');
-const { isAuth, defined, wait, freePostWhitelist, toClientPost } = require('./utils');
+const { isAuth, isAdmin, defined, wait, freePostWhitelist, toClientPost } = require('./utils');
 
 const router = express.Router();
 
@@ -88,6 +88,55 @@ router.get('/', async (req, res) => {
             error: err
         });
     }
+});
+
+router.get('/featured', async (req, res) => {
+    try {
+        const rawData = await Posts.find({ featured: true, active: true });
+
+        let userId;
+        if (req.email) {
+            const user = await User.findOne({ email: req.user.email });
+            userId = user._id;
+        }
+
+        const data = rawData.map(d => toClientPost(d, userId));
+
+        res.send({
+            success: true,
+            data
+        });
+    } catch (err) {
+        res.send({
+            success: false,
+            error: err
+        });
+    }
+});
+
+router.post('/:_id/feature', isAdmin, async (req, res) => {
+    const { _id } = req.params;
+    const post = await Posts.findOne({ _id, active: true });
+    if (!post) {
+        res.json({
+            success: false,
+            error: 'Post not found'
+        });
+        return;
+    }
+    if (!post.featured) {
+        const prevFeatured = await Posts.findOne({ genre: post.genre, featured: true });
+        if (prevFeatured) {
+            prevFeatured.featured = false;
+            await prevFeatured.save();
+        }
+    }
+    post.featured = !post.featured;
+    await post.save();
+    res.json({
+        success: true,
+        featured: post.featured
+    });
 });
 
 router.put('/:_id/like', isAuth, async (req, res) => {

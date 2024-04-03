@@ -73,6 +73,10 @@ const PostSchema = mongoose.Schema({
     videoUrl: String,
     coinExplorerLink: String,
     linkedinLink: String,
+    featured: {
+        type: Boolean,
+        default: false
+    },
 });
 
 module.exports = mongoose.model('Posts', PostSchema);
